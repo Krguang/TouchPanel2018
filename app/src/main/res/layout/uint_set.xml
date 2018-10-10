@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="600dp"
+    android:layout_height="600dp"
+    android:background="#d9dad5"
+    >
+
+
+    <CheckBox
+        android:id="@+id/yaCha0_50_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="0-50Pa"
+        android:textColor="#ff000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.291"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.247" />
+
+    <CheckBox
+        android:id="@+id/neiBuXieYi_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="内部协议"
+        android:textColor="#ff000000"
+        app:layout_constraintStart_toStartOf="@+id/yaCha0_50_cb"
+        app:layout_constraintTop_toBottomOf="@+id/yaCha0_50_cb" />
+
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="系统参数设置"
+        android:textSize="60dp"
+        android:textColor="#ff000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.037" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        />
+
+
+    <CheckBox
+        android:id="@+id/yaCha0_100_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="0-100Pa"
+        android:textColor="#ff000000"
+        app:layout_constraintBottom_toBottomOf="@+id/yaCha0_50_cb"
+        app:layout_constraintStart_toEndOf="@+id/yaCha0_50_cb" />
+
+    <CheckBox
+        android:id="@+id/yaCha50_50_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-50-+50Pa"
+        android:textColor="#ff000000"
+        app:layout_constraintBottom_toBottomOf="@+id/yaCha0_100_cb"
+        app:layout_constraintStart_toEndOf="@+id/yaCha0_100_cb" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="压差量程："
+        android:textColor="#ff000000"
+        app:layout_constraintBaseline_toBaselineOf="@+id/yaCha0_50_cb"
+        app:layout_constraintEnd_toStartOf="@+id/yaCha0_50_cb" />
+
+    <CheckBox
+        android:id="@+id/waiBuXieYi_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:text="外部协议"
+        android:textColor="#ff000000"
+        app:layout_constraintBottom_toBottomOf="@+id/neiBuXieYi_cb"
+        app:layout_constraintStart_toEndOf="@+id/neiBuXieYi_cb" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="协议类型："
+        android:textColor="#ff000000"
+        app:layout_constraintBaseline_toBaselineOf="@+id/neiBuXieYi_cb"
+        app:layout_constraintEnd_toStartOf="@+id/neiBuXieYi_cb" />
+
+    <EditText
+        android:id="@+id/slave_add_et"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:inputType="number"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.267"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.877" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="从机地址："
+        android:textColor="#ff000000"
+        app:layout_constraintBaseline_toBaselineOf="@+id/slave_add_et"
+        app:layout_constraintEnd_toStartOf="@+id/slave_add_et" />
+
+    <CheckBox
+        android:id="@+id/maiChong_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="脉冲模式"
+        android:textColor="#ff000000"
+        app:layout_constraintStart_toStartOf="@+id/neiBuXieYi_cb"
+        app:layout_constraintTop_toBottomOf="@+id/neiBuXieYi_cb" />
+
+    <CheckBox
+        android:id="@+id/dianPing_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:text="电平模式"
+        android:textColor="#ff000000"
+        app:layout_constraintBottom_toBottomOf="@+id/maiChong_cb"
+        app:layout_constraintStart_toEndOf="@+id/maiChong_cb" />
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="按键模式："
+        android:textColor="#ff000000"
+        app:layout_constraintBaseline_toBaselineOf="@+id/maiChong_cb"
+        app:layout_constraintEnd_toStartOf="@+id/maiChong_cb" />
+
+
+</android.support.constraint.ConstraintLayout>
