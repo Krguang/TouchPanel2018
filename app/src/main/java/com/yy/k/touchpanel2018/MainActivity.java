@@ -56,8 +56,6 @@ public class MainActivity extends Activity {
         private Button ButDown_shidu;
         private Button ButUp_shidu;
         private TextView tv_ShiduDispay;
-        private Button ButDown_Yacha;
-        private Button ButUp_yacha;
         private TextView tv_YaChaDispay;
         private Button ButJizu_start_stop;
         private Button ButZhiban_start_stop;
@@ -159,13 +157,8 @@ public class MainActivity extends Activity {
         private TextView tv_Calendar;
         private SimpleDateFormat df;
         private SimpleDateFormat df_data;
-        private int setWenDu = 250;
-        private int setShiDu = 500;
         private int setYaCha = 500;
-        private int yaChaTemp;
         private double yaChaFloat;
-        private double yaChaSetFloat;
-        private int music_dongtai_temp;
         private short music_UpDown;
         private int ButLightling_1_variabe = 1;
         private int ButLightling_2_variabe = 1;
@@ -176,7 +169,6 @@ public class MainActivity extends Activity {
         private int ButErasure_variabe = 1;//消音
         private int wendu_DisplaySet_Change = 0;
         private int shidu_DisplaySet_Change = 0;
-        private int yacha_DisplaySet_Change = 0;
 
         Timer timer1 = new Timer();
         Timer timer2 = new Timer();
@@ -191,6 +183,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent();
         Modbus_Slav modbus_salve = new Modbus_Slav();
         Modbus_Slav1 modbus_save_1 = new Modbus_Slav1();
+        TelephoneSend telephoneSend = new TelephoneSend();
 
         SharedPreferences sharedPreferences;
         SharedPreferences sharedUintSet;
@@ -199,14 +192,6 @@ public class MainActivity extends Activity {
         String data;
 
         private int keyMode;
-        private double yaChaFlotFromLocal;
-
-
-        @Override
-        public boolean dispatchTouchEvent(MotionEvent ev) {
-                //  Log.d(TAG, "dispatchTouchEvent: ");
-                return super.dispatchTouchEvent(ev);
-        }
 
         public void onCreate(Bundle savedInstanceState) {
 
@@ -218,7 +203,6 @@ public class MainActivity extends Activity {
                 editor = sharedPreferences.edit();//获取编辑器
                 modbus_salve.start();
                 modbus_save_1.start();
-
 
                 InitView();
                 initOnTouchListener();
@@ -542,6 +526,9 @@ public class MainActivity extends Activity {
                 task2=new TimerTask() {
                         @Override
                         public void run() {
+
+                                telephoneSend.sendDataMaster16();
+
                                 runOnUiThread(new Runnable() {      // UI thread
 
                                         public void run() {
@@ -615,42 +602,18 @@ public class MainActivity extends Activity {
                                                 }
 
 
-                                       //         yacha_DisplaySet_Change++;
 
-                                                //默认是0-100Pa
-
-                                      //          yaChaSetFloat = setYaCha/10.0;
-                                       //         yaChaFloat = modbus_salve.getYaCha()/10.0;
-
-                                                yaChaFloat = Modbus_Slav1.pressFromLocal/10.0;
+                                                yaChaFloat = Modbus_Slav1.pressFromLocal/10.0;           //默认0-100pa
 
                                                 if (modbus_salve.yaChaLiangCheng == 0){                  //0-50Pa
-
-                                                    //    yaChaSetFloat = setYaCha/20.0;
-                                                     //   yaChaFloat = modbus_salve.getYaCha()/20.0;
                                                         yaChaFloat = Modbus_Slav1.pressFromLocal/20.0;
-
                                                 }else if(modbus_salve.yaChaLiangCheng == 2){            //-50-+50Pa
-
-                                                        //yaChaSetFloat = (setYaCha - 500)/10;
-                                                        //yaChaFloat = (modbus_salve.getYaCha() - 500)/10;
                                                         yaChaFloat = (Modbus_Slav1.pressFromLocal - 500)/10;
                                                 }
 
                                                 String yaCha = String.format(Locale.US,"%.1f",yaChaFloat);
 
                                                 tv_YaChaDispay.setText(yaCha+"Pa");
-                                           //     String yaCha = String.format(Locale.US,"%.1f",yaChaFloat);//不加Locale.US也可以，会warning
-                                            //    String yaChaSet = String.format(Locale.US,"%.1f",yaChaSetFloat);
-
-
-                                          //      if (yacha_DisplaySet_Change < 30)
-                                          //              tv_YaChaDispay.setText(yaChaSet+"Pa");
-                                         //       else {
-                                          //              tv_YaChaDispay.setText(yaCha+"Pa");
-                                          //              yacha_DisplaySet_Change = 30;
-                                          //      }
-
 
                                                 if (modbus_salve.getFengJiZhuangTai() == 1) {
                                                         ButJizhuyunxing_led.setBackgroundResource(R.drawable.qitizhengchang);
@@ -867,31 +830,6 @@ public class MainActivity extends Activity {
         }
 
         /***
-         * 压差递减调节
-         * @param v
-         */
-        public void Butyacha_down(View v) {
-                if (setYaCha > 10)
-                        setYaCha -= 10;
-                yacha_DisplaySet_Change = 0;
-                modbus_salve.setYaChaSet(setYaCha);
-        }
-
-        /***
-         * 压差递减调节
-         * @param v
-         */
-        public void Butyacha_up(View v) {
-                if (setYaCha < 990)
-                        setYaCha += 10;
-                yacha_DisplaySet_Change = 0;
-
-                modbus_salve.setYaChaSet(setYaCha);
-
-        }
-
-
-        /***
          * 机组起停
          * @param v
          */
@@ -995,10 +933,10 @@ public class MainActivity extends Activity {
         public void Butbohao_1(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "1");
-                if(modbus_save_1.getPhone_dial_1()==1){
-                        modbus_save_1.setPhone_dial_1((short) 0);
+                if(telephoneSend.phone_dial_1==1){
+                        telephoneSend.phone_dial_1 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_1((short) 1);
+                        telephoneSend.phone_dial_1 = 1;
                 }
         }
 
@@ -1009,10 +947,10 @@ public class MainActivity extends Activity {
         public void Butbohao_2(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "2");
-                if(modbus_save_1.getPhone_dial_2()==1){
-                        modbus_save_1.setPhone_dial_2((short) 0);
+                if(telephoneSend.phone_dial_2==1){
+                        telephoneSend.phone_dial_2 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_2((short) 1);
+                        telephoneSend.phone_dial_2 = 1;
                 }
         }
 
@@ -1023,10 +961,10 @@ public class MainActivity extends Activity {
         public void Butbohao_3(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "3");
-                if(modbus_save_1.getPhone_dial_3()==1){
-                        modbus_save_1.setPhone_dial_3((short) 0);
+                if(telephoneSend.phone_dial_3==1){
+                        telephoneSend.phone_dial_3 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_3((short) 1);
+                        telephoneSend.phone_dial_3 = 1;
                 }
         }
 
@@ -1037,10 +975,10 @@ public class MainActivity extends Activity {
         public void Butbohao_4(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "4");
-                if(modbus_save_1.getPhone_dial_4()==1){
-                        modbus_save_1.setPhone_dial_4((short) 0);
+                if(telephoneSend.phone_dial_4==1){
+                        telephoneSend.phone_dial_4 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_4((short) 1);
+                        telephoneSend.phone_dial_4 = 1;
                 }
         }
 
@@ -1051,10 +989,10 @@ public class MainActivity extends Activity {
         public void Butbohao_5(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "5");
-                if(modbus_save_1.getPhone_dial_5()==1){
-                        modbus_save_1.setPhone_dial_5((short) 0);
+                if(telephoneSend.phone_dial_5==1){
+                        telephoneSend.phone_dial_5 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_5((short) 1);
+                        telephoneSend.phone_dial_5 = 1;
                 }
         }
 
@@ -1066,10 +1004,10 @@ public class MainActivity extends Activity {
         public void Butbohao_6(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "6");
-                if(modbus_save_1.getPhone_dial_6()==1){
-                        modbus_save_1.setPhone_dial_6((short) 0);
+                if(telephoneSend.phone_dial_6==1){
+                        telephoneSend.phone_dial_6 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_6((short) 1);
+                        telephoneSend.phone_dial_6 = 1;
                 }
         }
 
@@ -1081,10 +1019,10 @@ public class MainActivity extends Activity {
         public void Butbohao_7(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "7");
-                if(modbus_save_1.getPhone_dial_7()==1){
-                        modbus_save_1.setPhone_dial_7((short) 0);
+                if(telephoneSend.phone_dial_7==1){
+                        telephoneSend.phone_dial_7 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_7((short) 1);
+                        telephoneSend.phone_dial_7 = 1;
                 }
         }
 
@@ -1097,10 +1035,10 @@ public class MainActivity extends Activity {
         public void Butbohao_8(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "8");
-                if(modbus_save_1.getPhone_dial_8()==1){
-                        modbus_save_1.setPhone_dial_8((short) 0);
+                if(telephoneSend.phone_dial_8==1){
+                        telephoneSend.phone_dial_8 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_8((short) 1);
+                        telephoneSend.phone_dial_8 = 1;
                 }
         }
 
@@ -1112,10 +1050,10 @@ public class MainActivity extends Activity {
         public void Butbohao_9(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "9");
-                if(modbus_save_1.getPhone_dial_9()==1){
-                        modbus_save_1.setPhone_dial_9((short) 0);
+                if(telephoneSend.phone_dial_9==1){
+                        telephoneSend.phone_dial_9 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_9((short) 1);
+                        telephoneSend.phone_dial_9 = 1;
                 }
         }
 
@@ -1128,10 +1066,10 @@ public class MainActivity extends Activity {
         public void Butbohaoxing(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "*");
-                if(modbus_save_1.getPhone_dial_miHao()==1){
-                        modbus_save_1.setPhone_dial_miHao((short) 0);
+                if(telephoneSend.phone_dial_miHao==1){
+                        telephoneSend.phone_dial_miHao = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_miHao((short) 1);
+                        telephoneSend.phone_dial_miHao = 1;
                 }
         }
 
@@ -1143,10 +1081,10 @@ public class MainActivity extends Activity {
         public void Butbohao_0(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "0");
-                if(modbus_save_1.getPhone_dial_0()==1){
-                        modbus_save_1.setPhone_dial_0((short) 0);
+                if(telephoneSend.phone_dial_0==1){
+                        telephoneSend.phone_dial_0 = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_0((short) 1);
+                        telephoneSend.phone_dial_0 = 1;
                 }
         }
 
@@ -1158,10 +1096,10 @@ public class MainActivity extends Activity {
         public void Butbohaojing(View v) {
                 if (Telephone_display.length() < 15)
                         Telephone_display.setText(Telephone_display.getText() + "#");
-                if(modbus_save_1.getPhone_dial_jingHao()==1){
-                        modbus_save_1.setPhone_dial_jingHao((short) 0);
+                if(telephoneSend.phone_dial_jingHao==1){
+                        telephoneSend.phone_dial_jingHao = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_jingHao((short) 1);
+                        telephoneSend.phone_dial_jingHao = 1;
                 }
         }
 
@@ -1172,10 +1110,10 @@ public class MainActivity extends Activity {
 
         public void Butbohao(View v) {
                 Telephone_display.setText("");
-                if(modbus_save_1.getPhone_dial_miantiJian()==1){
-                        modbus_save_1.setPhone_dial_miantiJian((short) 0);
+                if(telephoneSend.phone_dial_miantiJian==1){
+                        telephoneSend.phone_dial_miantiJian = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_miantiJian((short) 1);
+                        telephoneSend.phone_dial_miantiJian = 1;
                 }
         }
 
@@ -1185,14 +1123,11 @@ public class MainActivity extends Activity {
          */
 
         public void Butduijiang(View v) {
-                if (modbus_save_1.getDuiJiangJian()==1){
-                        modbus_save_1.setDuiJiangJian((short) 0);
-                }else{
-                        modbus_save_1.setDuiJiangJian((short) 1);
+                if(telephoneSend.duiJiangJian==1){
+                        telephoneSend.duiJiangJian = 0;
+                }else {
+                        telephoneSend.duiJiangJian = 1;
                 }
-
-                //       intent.setClass(this, PingBao.class);
-                //     startActivity(intent);
         }
 
         /***
@@ -1432,100 +1367,100 @@ public class MainActivity extends Activity {
                                 case 0:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "0");
-                                        if(modbus_save_1.getPhone_dial_0()==1){
-                                                modbus_save_1.setPhone_dial_0((short) 0);
+                                        if(telephoneSend.phone_dial_0==1){
+                                                telephoneSend.phone_dial_0 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_0((short) 1);
+                                                telephoneSend.phone_dial_0 = 1;
                                         }
                                         break;
                                 }
                                 case 1:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "1");
-                                        if(modbus_save_1.getPhone_dial_1()==1){
-                                                modbus_save_1.setPhone_dial_1((short) 0);
+                                        if(telephoneSend.phone_dial_1==1){
+                                                telephoneSend.phone_dial_1 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_1((short) 1);
+                                                telephoneSend.phone_dial_1 = 1;
                                         }
                                         break;
                                 }
                                 case 2:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "2");
-                                        if(modbus_save_1.getPhone_dial_2()==1){
-                                                modbus_save_1.setPhone_dial_2((short) 0);
+                                        if(telephoneSend.phone_dial_2==1){
+                                                telephoneSend.phone_dial_2 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_2((short) 1);
+                                                telephoneSend.phone_dial_2 = 1;
                                         }
                                         break;
                                 }
                                 case 3:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "3");
-                                        if(modbus_save_1.getPhone_dial_3()==1){
-                                                modbus_save_1.setPhone_dial_3((short) 0);
+                                        if(telephoneSend.phone_dial_3==1){
+                                                telephoneSend.phone_dial_3 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_3((short) 1);
+                                                telephoneSend.phone_dial_3 = 1;
                                         }
                                         break;
                                 }
                                 case 4:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "4");
-                                        if(modbus_save_1.getPhone_dial_4()==1){
-                                                modbus_save_1.setPhone_dial_4((short) 0);
+                                        if(telephoneSend.phone_dial_4==1){
+                                                telephoneSend.phone_dial_4 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_4((short) 1);
+                                                telephoneSend.phone_dial_4 = 1;
                                         }
                                         break;
                                 }
                                 case 5:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "5");
-                                        if(modbus_save_1.getPhone_dial_5()==1){
-                                                modbus_save_1.setPhone_dial_5((short) 0);
+                                        if(telephoneSend.phone_dial_5==1){
+                                                telephoneSend.phone_dial_5 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_5((short) 1);
+                                                telephoneSend.phone_dial_5 = 1;
                                         }
                                         break;
                                 }
                                 case 6:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "6");
-                                        if(modbus_save_1.getPhone_dial_6()==1){
-                                                modbus_save_1.setPhone_dial_6((short) 0);
+                                        if(telephoneSend.phone_dial_6==1){
+                                                telephoneSend.phone_dial_6 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_6((short) 1);
+                                                telephoneSend.phone_dial_6 = 1;
                                         }
                                         break;
                                 }
                                 case 7:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "7");
-                                        if(modbus_save_1.getPhone_dial_7()==1){
-                                                modbus_save_1.setPhone_dial_7((short) 0);
+                                        if(telephoneSend.phone_dial_7==1){
+                                                telephoneSend.phone_dial_7 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_7((short) 1);
+                                                telephoneSend.phone_dial_7 = 1;
                                         }
                                         break;
                                 }
                                 case 8:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "8");
-                                        if(modbus_save_1.getPhone_dial_8()==1){
-                                                modbus_save_1.setPhone_dial_8((short) 0);
+                                        if(telephoneSend.phone_dial_8==1){
+                                                telephoneSend.phone_dial_8 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_8((short) 1);
+                                                telephoneSend.phone_dial_8 = 1;
                                         }
                                         break;
                                 }
                                 case 9:{
                                         if (Telephone_display.length() < 15)
                                                 Telephone_display.setText(Telephone_display.getText() + "9");
-                                        if(modbus_save_1.getPhone_dial_9()==1){
-                                                modbus_save_1.setPhone_dial_9((short) 0);
+                                        if(telephoneSend.phone_dial_9==1){
+                                                telephoneSend.phone_dial_9 = 0;
                                         }else {
-                                                modbus_save_1.setPhone_dial_9((short) 1);
+                                                telephoneSend.phone_dial_9 = 1;
                                         }
                                         break;
                                 }
@@ -1536,10 +1471,10 @@ public class MainActivity extends Activity {
 
         public void mianTiStart(){
                 Telephone_display.setText("");
-                if(modbus_save_1.getPhone_dial_miantiJian()==1){
-                        modbus_save_1.setPhone_dial_miantiJian((short) 0);
+                if(telephoneSend.phone_dial_miantiJian==1){
+                        telephoneSend.phone_dial_miantiJian = 0;
                 }else {
-                        modbus_save_1.setPhone_dial_miantiJian((short) 1);
+                        telephoneSend.phone_dial_miantiJian = 1;
                 }
         }
 
