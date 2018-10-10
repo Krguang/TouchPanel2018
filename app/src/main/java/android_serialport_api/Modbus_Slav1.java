@@ -41,21 +41,6 @@ public class Modbus_Slav1 extends Thread {
     private byte danQiChaoYa;
     private byte danQiQianYa;
 
-    private short phone_dial_0;
-    private short phone_dial_1;
-    private short phone_dial_2;
-    private short phone_dial_3;
-    private short phone_dial_4;
-    private short phone_dial_5;
-    private short phone_dial_6;
-    private short phone_dial_7;
-    private short phone_dial_8;
-    private short phone_dial_9;
-    private short phone_dial_miHao;
-    private short phone_dial_jingHao;
-    private short phone_dial_miantiJian;
-    private short duiJiangJian;
-
     private short Lightling_1 = 1;
 
     private short Lightling_2 = 1;
@@ -351,8 +336,6 @@ public class Modbus_Slav1 extends Thread {
 
         regHodingBuf[0] = BackMusic_upDown;
         regHodingBuf[1] = (Prepare << 0) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
-        regHodingBuf[2] = (phone_dial_0<<0)|(phone_dial_1<<1)|(phone_dial_2<<2)|(phone_dial_3<<3)|(phone_dial_4<<4)|(phone_dial_5<<5)|(phone_dial_6<<6)|
-                (phone_dial_7<<7)|(phone_dial_8<<8)|(phone_dial_9<<9)|(phone_dial_miHao<<10)|(phone_dial_jingHao<<11)|(phone_dial_miantiJian<<12)|(duiJiangJian<<13);
     }
 
 
@@ -429,145 +412,6 @@ public class Modbus_Slav1 extends Thread {
 
     public byte getDanQiQianYa(){
         return danQiQianYa;
-    }
-
-    public short getPhone_dial_1() {
-        return phone_dial_1;
-    }
-
-
-    public void setPhone_dial_1(short phone_dial_1) {
-        this.phone_dial_1 = phone_dial_1;
-    }
-
-
-    public short getPhone_dial_2() {
-        return phone_dial_2;
-    }
-
-
-    public void setPhone_dial_2(short phone_dial_2) {
-        this.phone_dial_2 = phone_dial_2;
-    }
-
-
-    public short getPhone_dial_3() {
-        return phone_dial_3;
-    }
-
-
-    public void setPhone_dial_3(short phone_dial_3) {
-        this.phone_dial_3 = phone_dial_3;
-    }
-
-
-    public short getPhone_dial_4() {
-        return phone_dial_4;
-    }
-
-
-    public void setPhone_dial_4(short phone_dial_4) {
-        this.phone_dial_4 = phone_dial_4;
-    }
-
-
-    public short getPhone_dial_5() {
-        return phone_dial_5;
-    }
-
-
-    public void setPhone_dial_5(short phone_dial_5) {
-        this.phone_dial_5 = phone_dial_5;
-    }
-
-
-    public short getPhone_dial_6() {
-        return phone_dial_6;
-    }
-
-
-    public void setPhone_dial_6(short phone_dial_6) {
-        this.phone_dial_6 = phone_dial_6;
-    }
-
-
-    public short getPhone_dial_7() {
-        return phone_dial_7;
-    }
-
-
-    public void setPhone_dial_7(short phone_dial_7) {
-        this.phone_dial_7 = phone_dial_7;
-    }
-
-
-    public short getPhone_dial_8() {
-        return phone_dial_8;
-    }
-
-
-    public void setPhone_dial_8(short phone_dial_8) {
-        this.phone_dial_8 = phone_dial_8;
-    }
-
-
-    public short getPhone_dial_9() {
-        return phone_dial_9;
-    }
-
-
-    public void setPhone_dial_9(short phone_dial_9) {
-        this.phone_dial_9 = phone_dial_9;
-    }
-
-
-    public short getPhone_dial_0() {
-        return phone_dial_0;
-    }
-
-
-    public void setPhone_dial_0(short phone_dial_0) {
-        this.phone_dial_0 = phone_dial_0;
-    }
-
-
-    public short getPhone_dial_miHao() {
-        return phone_dial_miHao;
-    }
-
-
-    public void setPhone_dial_miHao(short phone_dial_miHao) {
-        this.phone_dial_miHao = phone_dial_miHao;
-    }
-
-
-    public short getPhone_dial_jingHao() {
-        return phone_dial_jingHao;
-    }
-
-
-    public void setPhone_dial_jingHao(short phone_dial_jingHao) {
-        this.phone_dial_jingHao = phone_dial_jingHao;
-    }
-
-
-    public short getPhone_dial_miantiJian() {
-        return phone_dial_miantiJian;
-    }
-
-
-    public void setPhone_dial_miantiJian(short phone_dial_miantiJian) {
-        this.phone_dial_miantiJian = phone_dial_miantiJian;
-    }
-
-
-    public short getDuiJiangJian() {
-        return duiJiangJian;
-    }
-
-
-    public void setDuiJiangJian(short duiJiangJian) {
-        this.duiJiangJian = duiJiangJian;
     }
 
     public short getLightling_1() {

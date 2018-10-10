@@ -75,6 +75,9 @@ public  class TelephoneSend {
 
     private void slav_hand_10() {
 
+        regHodingBuf[0] = (phone_dial_0<<0)|(phone_dial_1<<1)|(phone_dial_2<<2)|(phone_dial_3<<3)|(phone_dial_4<<4)|(phone_dial_5<<5)|(phone_dial_6<<6)|
+                (phone_dial_7<<7)|(phone_dial_8<<8)|(phone_dial_9<<9)|(phone_dial_miHao<<10)|(phone_dial_jingHao<<11)|(phone_dial_miantiJian<<12)|(duiJiangJian<<13);
+/*
         if (1 == phone_dial_0){
 
             regHodingBuf[0] |= 1;
@@ -186,6 +189,7 @@ public  class TelephoneSend {
 
             regHodingBuf[0] &= ~(1<<13);
         }
+        */
     }
 
     public void sendDataMaster16() {
