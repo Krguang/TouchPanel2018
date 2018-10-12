@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -1092,6 +1093,7 @@ public class MainActivity extends Activity {
          * 拨号#
          * @param v
          */
+
 
         public void Butbohaojing(View v) {
                 if (Telephone_display.length() < 15)

@@ -15,8 +15,6 @@ public class Modbus_Slav1 extends Thread {
     private ArrayList<Byte> rxTemp = new ArrayList<Byte>();
     private Timer timer10ms=new Timer();
 
-    private final String uartPath = "/dev/ttyS3";
-
     private short backMusic;
     private short BackMusic_upDown;
 
@@ -66,13 +64,12 @@ public class Modbus_Slav1 extends Thread {
      */
     private short Erasure = 1;
 
-    int[] regHodingBuf = new int[1024];
+    private int[] regHodingBuf = new int[1024];
 
     private int gasStatus;
 
-    public int SLAV_addr = 1;
-    OutputStream mOutputStream = null;
-    InputStream mInputStream = null;
+    private OutputStream mOutputStream = null;
+    private InputStream mInputStream = null;
     private SerialPort mserialPort = null;
 
     public static int pressFromLocal;
@@ -82,13 +79,7 @@ public class Modbus_Slav1 extends Thread {
 
         try {
             mserialPort = getSerialPort();
-        } catch (InvalidParameterException e) {
-
-            e.printStackTrace();
-        } catch (SecurityException e) {
-
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InvalidParameterException | SecurityException | IOException e) {
 
             e.printStackTrace();
         }
@@ -140,8 +131,8 @@ public class Modbus_Slav1 extends Thread {
      *判断接收空闲，总线空闲时置位rxFlag
      */
     private TimerTask taskPoll=new TimerTask() {
-        int txDataLengthTemp=0;
         int txIdleCount=0;
+        int txDataLengthTemp=0;
         public void run() {
 
             if(rxTemp.size()>0){
@@ -158,12 +149,10 @@ public class Modbus_Slav1 extends Thread {
 
                             byte[] rxTempByteArray = new byte[rxTemp.size()+255];
                             int i=0;
-                            Iterator<Byte> iterator = rxTemp.iterator();
-                            while (iterator.hasNext()) {
-
-
-                                if (i < rxTemp.size()+255){
-                                    rxTempByteArray[i] = iterator.next();
+                            // while (iterator.hasNext()) {
+                            for (Byte aRxTemp : rxTemp) {
+                                if (i < rxTemp.size() + 255) {
+                                    rxTempByteArray[i] = aRxTemp;
                                     i++;
                                 }
                             }
@@ -186,8 +175,6 @@ public class Modbus_Slav1 extends Thread {
     };
 
 
-/********************************************************************************************/
-
     /***
      *
      * @return mserialPort_1
@@ -197,12 +184,12 @@ public class Modbus_Slav1 extends Thread {
      */
 
 
-    public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
+    private SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
         if (mserialPort == null) {
 
-            String path = uartPath;
+            String path = "/dev/ttyS3";
             int baudrate = 19200;
-            if ((path.length() == 0) || (baudrate == -1)) {
+            if (path.length() == 0) {
                 throw new InvalidParameterException();
             }
             mserialPort = new SerialPort(new File(path), baudrate, 0);
@@ -214,6 +201,7 @@ public class Modbus_Slav1 extends Thread {
 
     private void onDataReceived(byte[] reBuf, int size) {
 
+        int SLAV_addr = 1;
         if (!(SLAV_addr == reBuf[0])) {
             return;
         }
@@ -234,7 +222,7 @@ public class Modbus_Slav1 extends Thread {
 
     }
 
-    public void onDataSend(byte[] seBuf, int size) {
+    private void onDataSend(byte[] seBuf, int size) {
         try {
             mOutputStream = mserialPort.getOutputStream();
             mOutputStream.write(seBuf, 0, size);
@@ -262,9 +250,7 @@ public class Modbus_Slav1 extends Thread {
             val |= crc.getUnsignedByte(reBuf[8 + 2 * i]);
             regHodingBuf[addr + i] = val;
         }
-        for (int i = 0; i < 6; i++) {
-            seBuf[i] = reBuf[i];
-        }
+        System.arraycopy(reBuf, 0, seBuf, 0, 6);
         crc.update(seBuf, 6);
         int value_1 = crc.getValue();
         seBuf[6] = (byte) crc.getUnsignedByte((byte) ((value_1 >> 8) & 0xff));
@@ -277,7 +263,7 @@ public class Modbus_Slav1 extends Thread {
 
     private void slav_hand_10() {
 
-        yangQiChaoYa = (byte) ((regHodingBuf[3]>>0)&1);
+        yangQiChaoYa = (byte) ((regHodingBuf[3])&1);
         yangQIQianYa = (byte) ((regHodingBuf[3]>>1)&1);
 
         yaSuoKongQiChaoYa = (byte) ((regHodingBuf[3]>>2)&1);
@@ -335,7 +321,7 @@ public class Modbus_Slav1 extends Thread {
     private void slav_int_03() {
 
         regHodingBuf[0] = BackMusic_upDown;
-        regHodingBuf[1] = (Prepare << 0) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
+        regHodingBuf[1] = (Prepare) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
     }
 
 

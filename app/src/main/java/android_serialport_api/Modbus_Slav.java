@@ -20,15 +20,13 @@ public class Modbus_Slav extends Thread {
     private ArrayList<Byte> rxTemp = new ArrayList<Byte>();
     private Timer timer10ms=new Timer();
 
-    private final String uartPath = "/dev/ttyS2";
-
-    int[] regHodingBuf = new int[1024];
+    private int[] regHodingBuf = new int[1024];
 
     public boolean allowWriteShiDuSet = true;
     public boolean allowWriteWenDuSet = true;
 
-    OutputStream mOutputStream = null;
-    InputStream mInputStream = null;
+    private OutputStream mOutputStream = null;
+    private InputStream mInputStream = null;
 
     public int SLAV_addr = 1;
     public int yaChaLiangCheng;     //压差量程 0，1，2 分别对应 0-50Pa,0-100Pa,-50-+50Pa;
@@ -96,11 +94,8 @@ public class Modbus_Slav extends Thread {
 
                 e.printStackTrace();
             }
-        } catch (InvalidParameterException e) {
-
+        } catch (InvalidParameterException | SecurityException e) {
             e.printStackTrace();
-        } catch (SecurityException e) {
-
         }
         mInputStream = mserialPort.getInputStream();
         mOutputStream = mserialPort.getOutputStream();
@@ -169,11 +164,10 @@ public class Modbus_Slav extends Thread {
 
                             byte[] rxTempByteArray = new byte[rxTemp.size()+255];
                             int i=0;
-                            Iterator<Byte> iterator = rxTemp.iterator();
-                            while (iterator.hasNext()) {
+                            for (Byte aRxTemp : rxTemp) {
 
-                                if (i < rxTemp.size()+255){
-                                    rxTempByteArray[i] = iterator.next();
+                                if (i < rxTemp.size() + 255) {
+                                    rxTempByteArray[i] = aRxTemp;
                                     i++;
                                 }
                             }
@@ -201,12 +195,12 @@ public class Modbus_Slav extends Thread {
      * @throws IOException
      * @throws InvalidParameterException
      */
-    public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
+    private SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
         if (mserialPort == null) {
 
-            String path = uartPath;
+            String path = "/dev/ttyS2";
             int baudrate = 19200;
-            if ((path.length() == 0) || (baudrate == -1)) {
+            if (path.length() == 0) {
                 throw new InvalidParameterException();
             }
 
@@ -251,7 +245,7 @@ public class Modbus_Slav extends Thread {
      * 发送数据
      * @param seBuf
      */
-    public void onDataSend(byte[] seBuf, int size) {
+    private void onDataSend(byte[] seBuf, int size) {
         try {
             mOutputStream.write(seBuf, 0, size);
         } catch (IOException e) {
@@ -298,9 +292,7 @@ public class Modbus_Slav extends Thread {
             regHodingBuf[addr + i] = val;
         }
 
-        for (int i = 0; i < 6; i++) {
-            seBuf[i] = reBuf[i];
-        }
+        System.arraycopy(reBuf, 0, seBuf, 0, 6);
 
         crc.update(seBuf, 6);
         int value = crc.getValue();
