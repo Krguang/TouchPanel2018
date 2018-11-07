@@ -140,7 +140,6 @@ public class Modbus_Slav extends Thread {
                 }
             }
         }
-
     }
 
     /**
