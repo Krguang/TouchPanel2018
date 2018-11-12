@@ -73,6 +73,7 @@ public class Modbus_Slav1 extends Thread {
     private SerialPort mserialPort = null;
 
     public static int pressFromLocal;
+    public volatile boolean stop = false;
 
     public Modbus_Slav1() {
 
@@ -103,26 +104,28 @@ public class Modbus_Slav1 extends Thread {
         super.run();
         timer10ms.schedule(taskPoll,10,10);//5ms后开始，每5ms轮询一次
         while (!isInterrupted()) {
-
-            int size;
-            try {
-                byte[] reBuf = new byte[128];
-                if (mInputStream == null) return;
-                size = mInputStream.read(reBuf);
-                if (size > 0) {
-                    for (int i =0;i<size;i++){
-                        rxTemp.add((reBuf[i]));
+            while(!stop){
+                int size;
+                try {
+                    byte[] reBuf = new byte[128];
+                    if (mInputStream == null) return;
+                    size = mInputStream.read(reBuf);
+                    if (size > 0) {
+                        for (int i =0;i<size;i++){
+                            rxTemp.add((reBuf[i]));
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    try {
+                        mInputStream.close();
+                        mInputStream.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                try {
-                    mInputStream.close();
-                    mInputStream.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
             }
+
         }
 
     }
@@ -158,7 +161,7 @@ public class Modbus_Slav1 extends Thread {
                             }
 
                             onDataReceived(rxTempByteArray,rxTemp.size());
-                          //  Log.d(TAG, "run: "+Arrays.toString(rxTempByteArray));
+                            //  Log.d(TAG, "run: "+Arrays.toString(rxTempByteArray));
                             rxTemp.clear();
 
                         }catch (Exception e){

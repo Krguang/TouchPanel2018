@@ -288,10 +288,30 @@ public class MainActivity extends Activity {
 
         }
 
+
+        @Override
+        protected void onStop() {
+                super.onStop();
+                if (timer2!=null){
+                        if (task2!=null){
+                                task2.cancel();
+                        }
+                }
+
+                if (timer4!=null){
+                        if (task4!=null){
+                                task4.cancel();
+                        }
+                }
+
+                modbus_save_1.stop = true;
+        }
+
         @Override
         protected void onResume() {
                 super.onResume();
 
+                modbus_save_1.stop = false;
                 keyMode = sharedUintSet.getInt("按键模式",0);
 
                 if (timer1!=null){
@@ -529,6 +549,7 @@ public class MainActivity extends Activity {
                         public void run() {
 
                                 telephoneSend.sendDataMaster16();
+                                Log.d(TAG, "run: 发送电话号码");
 
                                 runOnUiThread(new Runnable() {      // UI thread
 
