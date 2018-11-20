@@ -159,7 +159,14 @@ public class MainActivity extends Activity {
         private SimpleDateFormat df;
         private SimpleDateFormat df_data;
         private int setYaCha = 500;
+
         private double yaChaFloat;
+        private double tempFloat;
+        private double humiFloat;
+
+        private double tempFloatTemp;
+        private double humiFloatTemp;
+
         private short music_UpDown;
         private int ButLightling_1_variabe = 1;
         private int ButLightling_2_variabe = 1;
@@ -555,20 +562,13 @@ public class MainActivity extends Activity {
 
                                         public void run() {
 
-                                                int SwenduDislay_bai;
-                                                int SwenduDislay_shi;
-                                                int SwenduDislay_ge;
-                                                int Swenduset_bai;
-                                                int Swenduset_shi;
-                                                int Swenduset_ge;
+                                                tempFloat = modbus_salve.getWenDu()/10.0;
+                                                tempFloatTemp = wenDuSetTemp/10.0;
 
-                                                Swenduset_bai = wenDuSetTemp / 100;
-                                                Swenduset_shi = wenDuSetTemp / 10 % 10;
-                                                Swenduset_ge = wenDuSetTemp % 10;
+                                                String temp = String.format(Locale.US,"%.1f",tempFloat);
+                                                String tempTemp = String.format(Locale.US,"%.1f",tempFloatTemp);
 
-                                                SwenduDislay_bai = modbus_salve.getWenDu() / 100;
-                                                SwenduDislay_shi = modbus_salve.getWenDu() / 10 % 10;
-                                                SwenduDislay_ge = modbus_salve.getWenDu() % 10;
+
 
 
                                                 wendu_DisplaySet_Change++;
@@ -577,9 +577,9 @@ public class MainActivity extends Activity {
                                                 if (wendu_DisplaySet_Change < 30) {
                                                         modbus_salve.allowWriteWenDuSet = false;
 
-                                                        tv_WenduDispay.setText(""+Swenduset_bai+Swenduset_shi+"."+Swenduset_ge+"℃");
+                                                        tv_WenduDispay.setText(tempTemp+"℃");
                                                 } else {
-                                                        tv_WenduDispay.setText(""+SwenduDislay_bai+SwenduDislay_shi+"."+SwenduDislay_ge+"℃");
+                                                        tv_WenduDispay.setText(temp+"℃");
                                                         if (wendu_DisplaySet_Change<33){
                                                                 modbus_salve.setWenDuSet(wenDuSetTemp);
                                                                 wenDuSetStatus=false;
@@ -590,29 +590,20 @@ public class MainActivity extends Activity {
                                                         }
                                                 }
 
-                                                int SshiduDislay_bai;
-                                                int SshiduDislay_shi;
-                                                int SshiduDislay_ge;
-                                                int Sshiduset_bai;
-                                                int Sshiduset_shi;
-                                                int Sshiduset_ge;
 
+                                                humiFloat = modbus_salve.getShiDu()/10.0;
+                                                humiFloatTemp = shiDuSetTemp/10.0;
 
-                                                Sshiduset_bai = shiDuSetTemp / 100;
-                                                Sshiduset_shi = shiDuSetTemp / 10 % 10;
-                                                Sshiduset_ge = shiDuSetTemp % 10;
-
-                                                SshiduDislay_bai = modbus_salve.getShiDu() / 100;
-                                                SshiduDislay_shi = modbus_salve.getShiDu() / 10 % 10;
-                                                SshiduDislay_ge = modbus_salve.getShiDu() % 10;
+                                                String humi = String.format(Locale.US,"%.1f",humiFloat);
+                                                String humiTemp = String.format(Locale.US,"%.1f",humiFloatTemp);
 
                                                 shidu_DisplaySet_Change++;
 
                                                 if (shidu_DisplaySet_Change < 30) {
                                                         modbus_salve.allowWriteShiDuSet = false;
-                                                        tv_ShiduDispay.setText(""+Sshiduset_bai+Sshiduset_shi+"."+Sshiduset_ge+"RH");
+                                                        tv_ShiduDispay.setText(humiTemp+"RH");
                                                 } else {
-                                                        tv_ShiduDispay.setText(""+SshiduDislay_bai+SshiduDislay_shi+"."+SshiduDislay_ge+"RH");
+                                                        tv_ShiduDispay.setText(humi+"RH");
                                                         if (shidu_DisplaySet_Change<33){
                                                                 modbus_salve.setShiDuSet(shiDuSetTemp);
                                                                 shiDuSetStatus=false;
@@ -785,15 +776,8 @@ public class MainActivity extends Activity {
          */
         public void Butwendu_up(View v) {
 
-        /*if(setWenDu<500)
-            setWenDu+=10;
-            */
                 if(wenDuSetStatus){
-            /*
-            if (modbus_salve.getWenDuSet() < 500) {
-                modbus_salve.setWenDuSet((short) (modbus_salve.getWenDuSet() + 10));
-            }
-           */
+
                         if(wenDuSetTemp<500){
                                 wenDuSetTemp+=10;
                         }
