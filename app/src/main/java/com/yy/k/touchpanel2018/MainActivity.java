@@ -201,6 +201,11 @@ public class MainActivity extends Activity {
 
         private int keyMode;
 
+        @Override
+        public void onBackPressed() {
+                // super.onBackPressed();
+        }
+
         public void onCreate(Bundle savedInstanceState) {
 
                 super.onCreate(savedInstanceState);
@@ -568,11 +573,7 @@ public class MainActivity extends Activity {
                                                 String temp = String.format(Locale.US,"%.1f",tempFloat);
                                                 String tempTemp = String.format(Locale.US,"%.1f",tempFloatTemp);
 
-
-
-
                                                 wendu_DisplaySet_Change++;
-
 
                                                 if (wendu_DisplaySet_Change < 30) {
                                                         modbus_salve.allowWriteWenDuSet = false;
@@ -613,8 +614,6 @@ public class MainActivity extends Activity {
                                                                 shidu_DisplaySet_Change = 34;
                                                         }
                                                 }
-
-
 
                                                 yaChaFloat = Modbus_Slav1.pressFromLocal/10.0;           //默认0-100pa
 
@@ -757,14 +756,12 @@ public class MainActivity extends Activity {
 
         public void Butwendu_down(View v) {
                 if(wenDuSetStatus){
-            /*
-            if (modbus_salve.getWenDuSet() > 10) {
-                modbus_salve.setWenDuSet((short) (modbus_salve.getWenDuSet() - 10));
-            }
-            */
+
+
                         if(wenDuSetTemp>10){
                                 wenDuSetTemp-=10;
                         }
+
                 }
                 wendu_DisplaySet_Change = 0;
                 wenDuSetStatus=true;
