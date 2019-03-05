@@ -323,7 +323,25 @@ public class Modbus_Slav1 extends Thread {
 
     private void slav_int_03() {
 
-        regHodingBuf[0] = BackMusic_upDown;
+       // regHodingBuf[0] = BackMusic_upDown;
+
+        switch (BackMusic_upDown){
+            case 0:
+                regHodingBuf[0] = 0;
+                break;
+            case 1:
+                regHodingBuf[0] = 1;
+                break;
+            case 2:
+                regHodingBuf[0] = 3;
+                break;
+            case 3:
+                regHodingBuf[0] = 6;
+                break;
+            case 4:
+                regHodingBuf[0] = 8;
+                break;
+        }
         regHodingBuf[1] = (Prepare) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
     }
 

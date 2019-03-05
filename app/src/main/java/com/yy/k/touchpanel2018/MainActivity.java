@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
         Timer timer2 = new Timer();
         Timer timer4 = new Timer();
 
-        private int musicValue=8;
+        private int musicValue=4;
 
         TimerTask task1;
         TimerTask task2;
@@ -1157,8 +1157,8 @@ public class MainActivity extends Activity {
         public void Butyinyuezen(View v) {
                 music_UpDown=modbus_save_1.getBackMusic_upDown();
                 music_UpDown++;
-                if (music_UpDown > 8) {
-                        music_UpDown = 8;
+                if (music_UpDown > 4) {
+                        music_UpDown = 4;
                 }
                 modbus_save_1.setBackMusic_upDown(music_UpDown);
         }
