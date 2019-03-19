@@ -338,9 +338,6 @@ public class Modbus_Slav1 extends Thread {
             case 3:
                 regHodingBuf[0] = 6;
                 break;
-            case 4:
-                regHodingBuf[0] = 8;
-                break;
         }
         regHodingBuf[1] = (Prepare) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
     }
