@@ -1,6 +1,7 @@
 package com.yy.k.touchpanel2018;
 
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -13,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 
 import android_serialport_api.Modbus_Slav;
 import android_serialport_api.Modbus_Slav1;
+import utils.SpUtils;
 
 public class MainActivity extends Activity {
 
@@ -41,7 +44,7 @@ public class MainActivity extends Activity {
         private boolean wenDuSetStatus=false;//温湿度设置按钮第一次按的时候不会改变值，只会显示设定值
         private boolean shiDuSetStatus=false;//此状态为用于判断是否是第一次按
 
-        private int wenDuSetTemp=250;//温度设置缓存，在设置温度时只会改变这个值，跳回温度显示时，这个值会传给setWenDuSet
+        private int wenDuSetTemp=230;//温度设置缓存，在设置温度时只会改变这个值，跳回温度显示时，这个值会传给setWenDuSet
         private int shiDuSetTemp=500;//湿度设置缓存
 
         private Button ButStart_shuoshu;
@@ -175,8 +178,8 @@ public class MainActivity extends Activity {
         private int But_OfLightThe_Lamp_variabe = 1;//光片灯
         private int ButPrepare_variabe = 1;//备用
         private int ButErasure_variabe = 1;//消音
-        private int wendu_DisplaySet_Change = 0;
-        private int shidu_DisplaySet_Change = 0;
+        private int wendu_DisplaySet_Change = 10;
+        private int shidu_DisplaySet_Change = 10;
 
         Timer timer1 = new Timer();
         Timer timer2 = new Timer();
@@ -200,6 +203,9 @@ public class MainActivity extends Activity {
         String data;
 
         private int keyMode;
+
+        private int wenDuSetChangeTemp = 230;
+        private int shiDuSetChangeTemp = 500;
 
         @Override
         public void onBackPressed() {
@@ -298,8 +304,25 @@ public class MainActivity extends Activity {
                         ButFuya_start_stop.setBackgroundResource(R.drawable.fuya_up);
                 }
 
+                Modbus_Slav.wenDuSet = SpUtils.getInt(this,"温度设定值",230);
+                Modbus_Slav.shiDuSet = SpUtils.getInt(this,"湿度设定值",500);
         }
 
+        @Override
+        protected void onDestroy() {
+                super.onDestroy();
+                try {
+                        modbus_salve.closePort();
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+
+                try {
+                        modbus_save_1.closePort();
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+        }
 
         @Override
         protected void onStop() {
@@ -324,6 +347,7 @@ public class MainActivity extends Activity {
                 super.onResume();
 
                 modbus_save_1.stop = false;
+                Modbus_Slav.stop_mainActivity = false;
                 keyMode = sharedUintSet.getInt("按键模式",0);
 
                 if (timer1!=null){
@@ -338,6 +362,16 @@ public class MainActivity extends Activity {
 
 
                                         public void run() {
+
+                                                if (wenDuSetChangeTemp != Modbus_Slav.wenDuSet){
+                                                        wenDuSetChangeTemp = Modbus_Slav.wenDuSet;
+                                                        SpUtils.putInt(getApplicationContext(),"温度设定值",wenDuSetChangeTemp);
+                                                }
+
+                                                if (shiDuSetChangeTemp != Modbus_Slav.shiDuSet){
+                                                        shiDuSetChangeTemp = Modbus_Slav.shiDuSet;
+                                                        SpUtils.putInt(getApplicationContext(),"湿度设定值",shiDuSetChangeTemp);
+                                                }
 
                                                 String shoushu_secc;
                                                 String shoushu_minuec;
@@ -567,7 +601,7 @@ public class MainActivity extends Activity {
 
                                         public void run() {
 
-                                                tempFloat = modbus_salve.getWenDu()/10.0;
+                                                tempFloat = Modbus_Slav.wenDu/10.0;
                                                 tempFloatTemp = wenDuSetTemp/10.0;
 
                                                 String temp = String.format(Locale.US,"%.1f",tempFloat);
@@ -575,24 +609,26 @@ public class MainActivity extends Activity {
 
                                                 wendu_DisplaySet_Change++;
 
-                                                if (wendu_DisplaySet_Change < 30) {
+                                                if (wendu_DisplaySet_Change < 10) {
                                                         modbus_salve.allowWriteWenDuSet = false;
-
                                                         tv_WenduDispay.setText(tempTemp+"℃");
+                                                        tv_WenduDispay.setTextColor(Color.YELLOW);
+
                                                 } else {
                                                         tv_WenduDispay.setText(temp+"℃");
-                                                        if (wendu_DisplaySet_Change<33){
+                                                        tv_WenduDispay.setTextColor(Color.WHITE);
+                                                        if (wendu_DisplaySet_Change == 10){
                                                                 modbus_salve.setWenDuSet(wenDuSetTemp);
                                                                 wenDuSetStatus=false;
                                                                 modbus_salve.allowWriteWenDuSet = true;
-                                                        }else {
+                                                        }else if (wendu_DisplaySet_Change > 30){
                                                                 wenDuSetTemp=modbus_salve.getWenDuSet();
-                                                                wendu_DisplaySet_Change=34;
+                                                                wendu_DisplaySet_Change=30;
                                                         }
                                                 }
 
 
-                                                humiFloat = modbus_salve.getShiDu()/10.0;
+                                                humiFloat = Modbus_Slav.shiDu/10.0;
                                                 humiFloatTemp = shiDuSetTemp/10.0;
 
                                                 String humi = String.format(Locale.US,"%.1f",humiFloat);
@@ -600,18 +636,20 @@ public class MainActivity extends Activity {
 
                                                 shidu_DisplaySet_Change++;
 
-                                                if (shidu_DisplaySet_Change < 30) {
+                                                if (shidu_DisplaySet_Change < 10) {
                                                         modbus_salve.allowWriteShiDuSet = false;
                                                         tv_ShiduDispay.setText(humiTemp+"RH");
+                                                        tv_ShiduDispay.setTextColor(Color.YELLOW);
                                                 } else {
                                                         tv_ShiduDispay.setText(humi+"RH");
-                                                        if (shidu_DisplaySet_Change<33){
+                                                        tv_ShiduDispay.setTextColor(Color.WHITE);
+                                                        if (shidu_DisplaySet_Change == 10){
                                                                 modbus_salve.setShiDuSet(shiDuSetTemp);
                                                                 shiDuSetStatus=false;
                                                                 modbus_salve.allowWriteShiDuSet = true;
-                                                        }else {
+                                                        }else if (shidu_DisplaySet_Change >30){
                                                                 shiDuSetTemp=modbus_salve.getShiDuSet();
-                                                                shidu_DisplaySet_Change = 34;
+                                                                shidu_DisplaySet_Change = 30;
                                                         }
                                                 }
 
@@ -658,16 +696,15 @@ public class MainActivity extends Activity {
                                                         ButGaoXiao_led.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                editor.putInt("回风温度", modbus_salve.getWenDu());
-                                                editor.putInt("回风湿度", modbus_salve.getShiDu());
-                                                editor.putInt("设定温度", modbus_salve.getWenDuSet());
-                                                editor.putInt("设定湿度", modbus_salve.getShiDuSet());
+                                         //       editor.putInt("回风温度", modbus_salve.getWenDu());
+                                         //       editor.putInt("回风湿度", modbus_salve.getShiDu());
+                                         //       editor.putInt("设定温度", modbus_salve.getWenDuSet());
+                                         //       editor.putInt("设定湿度", modbus_salve.getShiDuSet());
 
                                                 editor.putInt("机组状态", modbus_salve.getFengJiZhuangTai());
-                                                editor.putInt("冷水阀", modbus_salve.getColdWaterValveOpening());
-                                                editor.putInt("热水阀", modbus_salve.getHotWaterValveOpening());
-                                                editor.putInt("加湿器", modbus_salve.getHumidifieOpening());
-                                                editor.putInt("新风温度", modbus_salve.getTheAirTemperature());
+                                         //       editor.putInt("冷水阀", modbus_salve.getColdWaterValveOpening());
+                                         //       editor.putInt("热水阀", modbus_salve.getHotWaterValveOpening());
+                                         //       editor.putInt("加湿器", modbus_salve.getHumidifieOpening());
 
                                                 editor.putInt("上位机心跳监控点", modbus_salve.getUpperComputerHeartBeatMonitoringPoint());
                                                 editor.putInt("上位机手自动监控点", modbus_salve.getUpperComputerHandAutomaticallyMonitoringPoint());
@@ -687,18 +724,6 @@ public class MainActivity extends Activity {
                                                 editor.putInt("上位机排风机已启动监控点", modbus_salve.getUpperComputerPaiFengJiStartMonitoringPoint());
                                                 editor.putInt("上位机值班已启动监控点", modbus_salve.getUpperComputerZhiBanStartMonitoringPoint());
                                                 editor.putInt("上位机负压启动监控点", modbus_salve.getUpperComputerFuYaStartMonitoringPoint());
-                                                editor.putInt("上位机电预热1监控点", modbus_salve.getUpperComputerElectricPreheatOneMonitoringPoint());
-                                                editor.putInt("上位机电预热2监控点", modbus_salve.getUpperComputerElectricPreheatTwoMonitoringPoint());
-                                                editor.putInt("上位机电预热3监控点", modbus_salve.getUpperComputerElectricPreheatThreeMonitoringPoint());
-                                                editor.putInt("上位机电预热高温监控点", modbus_salve.getUpperComputerElectricPreheatHighTemperatureMonitoringPoint());
-                                                editor.putInt("上位机压缩机1运行监控点", modbus_salve.getUpperComputerCompressorOneStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机2运行监控点", modbus_salve.getUpperComputerCompressorTwoStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机3运行监控点", modbus_salve.getUpperComputerCompressorThreeStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机4运行监控点", modbus_salve.getUpperComputerCompressorFourStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机1故障监控点", modbus_salve.getUpperComputerCompressorOneBreakdownMonitoringPoint());
-                                                editor.putInt("上位机压缩机2故障监控点", modbus_salve.getUpperComputerCompressorTwoBreakdownMonitoringPoint());
-                                                editor.putInt("上位机压缩机3故障监控点", modbus_salve.getUpperComputerCompressorThreeBreakdownMonitoringPoint());
-                                                editor.putInt("上位机压缩机4故障监控点", modbus_salve.getUpperComputerCompressorFourBreakdownMonitoringPoint());
                                                 editor.putInt("冬夏季", modbus_salve.getWinterInSummer());
 
                                                 editor.apply();//提交修改

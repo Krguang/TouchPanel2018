@@ -32,14 +32,23 @@ public class Modbus_Slav extends Thread {
     public int yaChaLiangCheng;     //压差量程 0，1，2 分别对应 0-50Pa,0-100Pa,-50-+50Pa;
     public int xieYiLeiXing;        //协议类型：0，1分别对用内部协议，外部协议
 
+    public static int wenDuSet = 230;
+    public static int shiDuSet = 500;
+    public static int wenDu = 230;
+    public static int shiDu = 500;
+
+    public static int ColdWaterValveOpening;
+    public static int HotWaterValveOpening;
+    public static int HumidifieOpening;
+
     private int jiZuStartStop = 0;
     private int zhiBanStartStop = 0;
     private int fuYaStartStop = 0;
-    private int wenDuSet = 250;
-    private int shiDuSet = 500;
+ //   private int wenDuSet = 250;
+  //  private int shiDuSet = 500;
     private int yaChaSet = 500;
-    private int wenDu = 250;
-    private int shiDu = 500;
+ //   private int wenDu = 250;
+ //   private int shiDu = 500;
     private int yaCha = 500;
     private int fengJiZhuangTai = 0;
     private int zhiBanZhuangTai = 0;
@@ -47,10 +56,9 @@ public class Modbus_Slav extends Thread {
     private int fengJiGuZhang = 0;
     private int GaoXiao;
 
-    private int ColdWaterValveOpening = 0;//冷水阀
-    private int HotWaterValveOpening = 0;//热水阀
-    private int HumidifieOpening = 0;   //加湿器
-    private int TheAirTemperature = 0;//新风温度
+//    private int ColdWaterValveOpening = 0;//冷水阀
+//    private int HotWaterValveOpening = 0;//热水阀
+//    private int HumidifieOpening = 0;   //加湿器
 
     private int upperComputerHeartBeatMonitoringPoint = 0;       //上位机心跳监控点
     private int upperComputerHandAutomaticallyMonitoringPoint = 0;//上位机手自动监控点
@@ -68,23 +76,16 @@ public class Modbus_Slav extends Thread {
     private int upperComputerPaiFengJiStartMonitoringPoint;//上位机排风机已启动监控点
     private int upperComputerZhiBanStartMonitoringPoint;//上位机值班已启动监控点
     private int upperComputerFuYaStartMonitoringPoint;//上位机负压启动监控点
-    private int upperComputerElectricPreheatOneMonitoringPoint;//上位机电预热1监控点
-    private int upperComputerElectricPreheatTwoMonitoringPoint;//上位机电预热2监控点
-    private int upperComputerElectricPreheatThreeMonitoringPoint;//上位机电预热3监控点
-    private int upperComputerElectricPreheatHighTemperatureMonitoringPoint;//上位机电预热高温监控点
-    private int upperComputerCompressorOneStartMonitoringPoint;//上位机压缩机1运行监控点
-    private int upperComputerCompressorTwoStartMonitoringPoint;//上位机压缩机2运行监控点
-    private int upperComputerCompressorThreeStartMonitoringPoint;//上位机压缩机3运行监控点
-    private int upperComputerCompressorFourStartMonitoringPoint;//上位机压缩机4运行监控点
-    private int upperComputerCompressorOneBreakdownMonitoringPoint;//上位机压缩机1故障监控点
-    private int upperComputerCompressorTwoBreakdownMonitoringPoint;//上位机压缩机2故障监控点
-    private int upperComputerCompressorThreeBreakdownMonitoringPoint;//上位机压缩机3故障监控点
-    private int upperComputerCompressorFourBreakdownMonitoringPoint;//上位机压缩机4故障监控点
+
+
     private int WinterInSummer = 0;//冬夏季
 
    // Timer timer10ms=new Timer();
 
     private SerialPort mserialPort = null;
+
+    public static volatile boolean stop_mainActivity = false;
+    public static volatile boolean stop_UnitActivity = false;
 
     public Modbus_Slav() {
         try {
@@ -118,27 +119,31 @@ public class Modbus_Slav extends Thread {
         while (!isInterrupted()) {
 
 
+            while (!(stop_mainActivity&&stop_UnitActivity)){
 
-            int size;
-            try {
-                byte[] reBuf = new byte[128];
-                if (mInputStream == null) return;
-                size = mInputStream.read(reBuf);
+                int size;
+                try {
+                    byte[] reBuf = new byte[128];
+                    if (mInputStream == null) return;
+                    size = mInputStream.read(reBuf);
 
-                if (size > 0) {
-                    for (int i =0;i<size;i++){
-                        rxTemp.add((reBuf[i]));
+                    if (size > 0) {
+                        for (int i =0;i<size;i++){
+                            rxTemp.add((reBuf[i]));
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    try {
+                        mInputStream.close();
+                        mInputStream.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                try {
-                    mInputStream.close();
-                    mInputStream.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
             }
+
+
         }
     }
 
@@ -342,7 +347,7 @@ public class Modbus_Slav extends Thread {
         ColdWaterValveOpening =  regHodingBuf[13];//冷水阀开度
         HotWaterValveOpening = regHodingBuf[14];//热水阀开度
         HumidifieOpening =  regHodingBuf[15];  //加湿器开度1
-        TheAirTemperature = regHodingBuf[16]; //新风温度
+        //TheAirTemperature = regHodingBuf[16]; //新风温度
 
         upperComputerHeartBeatMonitoringPoint =  (regHodingBuf[17] & 0x0100) >> 8;                    //上位机心跳监控点
         upperComputerHandAutomaticallyMonitoringPoint =  (regHodingBuf[17] & 0x0200) >> 9;            //上位机手自动监控点
@@ -631,16 +636,6 @@ public class Modbus_Slav extends Thread {
     }
 
 
-    public int getTheAirTemperature() {
-        return TheAirTemperature;
-    }
-
-
-    public void setTheAirTemperature(int theAirTemperature) {
-        TheAirTemperature = theAirTemperature;
-    }
-
-
     public int getUpperComputerHeartBeatMonitoringPoint() {
         return upperComputerHeartBeatMonitoringPoint;
     }
@@ -814,138 +809,6 @@ public class Modbus_Slav extends Thread {
     public void setUpperComputerFuYaStartMonitoringPoint(
             int upperComputerFuYaStartMonitoringPoint) {
         this.upperComputerFuYaStartMonitoringPoint = upperComputerFuYaStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatOneMonitoringPoint() {
-        return upperComputerElectricPreheatOneMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatOneMonitoringPoint(
-            int upperComputerElectricPreheatOneMonitoringPoint) {
-        this.upperComputerElectricPreheatOneMonitoringPoint = upperComputerElectricPreheatOneMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatTwoMonitoringPoint() {
-        return upperComputerElectricPreheatTwoMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatTwoMonitoringPoint(
-            int upperComputerElectricPreheatTwoMonitoringPoint) {
-        this.upperComputerElectricPreheatTwoMonitoringPoint = upperComputerElectricPreheatTwoMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatThreeMonitoringPoint() {
-        return upperComputerElectricPreheatThreeMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatThreeMonitoringPoint(
-            int upperComputerElectricPreheatThreeMonitoringPoint) {
-        this.upperComputerElectricPreheatThreeMonitoringPoint = upperComputerElectricPreheatThreeMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatHighTemperatureMonitoringPoint() {
-        return upperComputerElectricPreheatHighTemperatureMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatHighTemperatureMonitoringPoint(
-            int upperComputerElectricPreheatHighTemperatureMonitoringPoint) {
-        this.upperComputerElectricPreheatHighTemperatureMonitoringPoint = upperComputerElectricPreheatHighTemperatureMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorOneStartMonitoringPoint() {
-        return upperComputerCompressorOneStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorOneStartMonitoringPoint(
-            int upperComputerCompressorOneStartMonitoringPoint) {
-        this.upperComputerCompressorOneStartMonitoringPoint = upperComputerCompressorOneStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorTwoStartMonitoringPoint() {
-        return upperComputerCompressorTwoStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorTwoStartMonitoringPoint(
-            int upperComputerCompressorTwoStartMonitoringPoint) {
-        this.upperComputerCompressorTwoStartMonitoringPoint = upperComputerCompressorTwoStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorThreeStartMonitoringPoint() {
-        return upperComputerCompressorThreeStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorThreeStartMonitoringPoint(
-            int upperComputerCompressorThreeStartMonitoringPoint) {
-        this.upperComputerCompressorThreeStartMonitoringPoint = upperComputerCompressorThreeStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorFourStartMonitoringPoint() {
-        return upperComputerCompressorFourStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorFourStartMonitoringPoint(
-            int upperComputerCompressorFourStartMonitoringPoint) {
-        this.upperComputerCompressorFourStartMonitoringPoint = upperComputerCompressorFourStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorOneBreakdownMonitoringPoint() {
-        return upperComputerCompressorOneBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorOneBreakdownMonitoringPoint(
-            int upperComputerCompressorOneBreakdownMonitoringPoint) {
-        this.upperComputerCompressorOneBreakdownMonitoringPoint = upperComputerCompressorOneBreakdownMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorTwoBreakdownMonitoringPoint() {
-        return upperComputerCompressorTwoBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorTwoBreakdownMonitoringPoint(
-            int upperComputerCompressorTwoBreakdownMonitoringPoint) {
-        this.upperComputerCompressorTwoBreakdownMonitoringPoint = upperComputerCompressorTwoBreakdownMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorThreeBreakdownMonitoringPoint() {
-        return upperComputerCompressorThreeBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorThreeBreakdownMonitoringPoint(
-            int upperComputerCompressorThreeBreakdownMonitoringPoint) {
-        this.upperComputerCompressorThreeBreakdownMonitoringPoint = upperComputerCompressorThreeBreakdownMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorFourBreakdownMonitoringPoint() {
-        return upperComputerCompressorFourBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorFourBreakdownMonitoringPoint(
-            int upperComputerCompressorFourBreakdownMonitoringPoint) {
-        this.upperComputerCompressorFourBreakdownMonitoringPoint = upperComputerCompressorFourBreakdownMonitoringPoint;
     }
 
 
