@@ -10,7 +10,8 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Modbus_Slav1 extends Thread {
+
+public class ModbusSlaveCtrl extends Thread {
 
     private ArrayList<Byte> rxTemp = new ArrayList<Byte>();
     private Timer timer10ms=new Timer();
@@ -72,11 +73,18 @@ public class Modbus_Slav1 extends Thread {
     private InputStream mInputStream = null;
     private SerialPort mserialPort = null;
 
-    public static int pressFromLocal;
     public volatile boolean stop = false;
 
-    public Modbus_Slav1() {
 
+    private int press;
+    private int wenDu = 230;
+    private int shiDu = 500;
+
+    private final static ModbusSlaveCtrl instance = new ModbusSlaveCtrl();
+    public static ModbusSlaveCtrl getInstance(){
+        return instance;
+    }
+    private ModbusSlaveCtrl() {
 
         try {
             mserialPort = getSerialPort();
@@ -288,7 +296,10 @@ public class Modbus_Slav1 extends Thread {
         danQiQianYa = (byte) ((regHodingBuf[3]>>11)&1);
 
         gasStatus=regHodingBuf[3];
-        pressFromLocal = regHodingBuf[13];
+
+        press = regHodingBuf[13];
+        wenDu = regHodingBuf[14]/2;
+        shiDu = regHodingBuf[15];
     }
 
     private void mod_Fun_03_Slav(byte[] reBuf) {
@@ -340,6 +351,19 @@ public class Modbus_Slav1 extends Thread {
                 break;
         }
         regHodingBuf[1] = (Prepare) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
+    }
+
+    public int getPress() {
+        return press;
+    }
+
+
+    public int getWenDu() {
+        return wenDu;
+    }
+
+    public int getShiDu() {
+        return shiDu;
     }
 
 

@@ -10,12 +10,8 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * 串口UTRA5
- *
- * @author Administrator
- */
-public class Modbus_Slav extends Thread {
+
+public class ModbusSlaveUnit extends Thread {
 
     private ArrayList<Byte> rxTemp = new ArrayList<Byte>();
     private Timer timer10ms=new Timer();
@@ -86,7 +82,14 @@ public class Modbus_Slav extends Thread {
 
     private SerialPort mserialPort = null;
 
-    public Modbus_Slav() {
+
+    private final static ModbusSlaveUnit instance = new ModbusSlaveUnit();
+
+    public static ModbusSlaveUnit getInstance(){
+        return instance;
+    }
+
+    private ModbusSlaveUnit() {
         try {
             try {
                 mserialPort = getSerialPort();

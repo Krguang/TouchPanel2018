@@ -22,8 +22,8 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import android_serialport_api.Modbus_Slav;
-import android_serialport_api.Modbus_Slav1;
+import android_serialport_api.ModbusSlaveCtrl;
+import android_serialport_api.ModbusSlaveUnit;
 
 public class MainActivity extends Activity {
 
@@ -189,8 +189,8 @@ public class MainActivity extends Activity {
         TimerTask task4;
 
         Intent intent = new Intent();
-        Modbus_Slav modbus_salve = new Modbus_Slav();
-        Modbus_Slav1 modbus_save_1 = new Modbus_Slav1();
+        ModbusSlaveUnit modbusSlaveUnit = ModbusSlaveUnit.getInstance();
+        ModbusSlaveCtrl modbusSlaveCtrl = ModbusSlaveCtrl.getInstance();
         TelephoneSend telephoneSend = new TelephoneSend();
 
         SharedPreferences sharedPreferences;
@@ -214,8 +214,8 @@ public class MainActivity extends Activity {
                 sharedPreferences = getSharedPreferences("ljq", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
                 sharedUintSet = this.getSharedPreferences("uint_set",this.MODE_WORLD_READABLE);
                 editor = sharedPreferences.edit();//获取编辑器
-                modbus_salve.start();
-                modbus_save_1.start();
+                modbusSlaveUnit.start();
+                modbusSlaveCtrl.start();
 
                 InitView();
                 initOnTouchListener();
@@ -228,70 +228,70 @@ public class MainActivity extends Activity {
 
         private void InitKey(){
 
-                modbus_save_1.setLightling_1((short) sharedPreferences.getInt("照明1",1));
+                modbusSlaveCtrl.setLightling_1((short) sharedPreferences.getInt("照明1",1));
                 if (1 == sharedPreferences.getInt("照明1",1)){
                         ButLightling_1.setBackgroundResource(R.drawable.led_on);
                 }else {
                         ButLightling_1.setBackgroundResource(R.drawable.led_off);
                 }
 
-                modbus_save_1.setLightling_2((short) sharedPreferences.getInt("照明2",1));
+                modbusSlaveCtrl.setLightling_2((short) sharedPreferences.getInt("照明2",1));
                 if (1 == sharedPreferences.getInt("照明2",1)){
                         ButLightling_2.setBackgroundResource(R.drawable.led_on);
                 }else {
                         ButLightling_2.setBackgroundResource(R.drawable.led_off);
                 }
 
-                modbus_save_1.setShadowless_Lamp((short) sharedPreferences.getInt("无影灯",1));
+                modbusSlaveCtrl.setShadowless_Lamp((short) sharedPreferences.getInt("无影灯",1));
                 if (1 == sharedPreferences.getInt("无影灯",1)){
                         ButShadowless_Lamp .setBackgroundResource(R.drawable.led_on);
                 }else {
                         ButShadowless_Lamp .setBackgroundResource(R.drawable.led_off);
                 }
 
-                modbus_save_1.setIntraoperative_Lamp((short) sharedPreferences.getInt("术中灯",1));
+                modbusSlaveCtrl.setIntraoperative_Lamp((short) sharedPreferences.getInt("术中灯",1));
                 if (1 == sharedPreferences.getInt("术中灯",1)){
                         ButIntraoperative_Lamp.setBackgroundResource(R.drawable.led_on);
                 }else {
                         ButIntraoperative_Lamp.setBackgroundResource(R.drawable.led_off);
                 }
 
-                modbus_save_1.setOfLightThe_Lamp((short) sharedPreferences.getInt("观片灯",1));
+                modbusSlaveCtrl.setOfLightThe_Lamp((short) sharedPreferences.getInt("观片灯",1));
                 if (1 == sharedPreferences.getInt("观片灯",1)){
                         But_OfLightThe_Lamp.setBackgroundResource(R.drawable.led_on);
                 }else {
                         But_OfLightThe_Lamp.setBackgroundResource(R.drawable.led_off);
                 }
 
-                modbus_save_1.setPrepare((short) sharedPreferences.getInt("备用",1));
+                modbusSlaveCtrl.setPrepare((short) sharedPreferences.getInt("备用",1));
                 if (1 == sharedPreferences.getInt("备用",1)){
                         ButPrepare.setBackgroundResource(R.drawable.led_on);
                 }else {
                         ButPrepare.setBackgroundResource(R.drawable.led_off);
                 }
 
-                modbus_save_1.setErasure((short) sharedPreferences.getInt("消音",1));
+                modbusSlaveCtrl.setErasure((short) sharedPreferences.getInt("消音",1));
                 if (1 == sharedPreferences.getInt("消音",1)){
                         ButErasure.setBackgroundResource(R.drawable.jingyin);
                 }else {
                         ButErasure.setBackgroundResource(R.drawable.jingyin_press);
                 }
 
-                modbus_salve.setJiZuStartStop(sharedPreferences.getInt("机组起停按键",0));
+                modbusSlaveUnit.setJiZuStartStop(sharedPreferences.getInt("机组起停按键",0));
                 if (1 == sharedPreferences.getInt("机组起停按键",0)){
                         ButJizu_start_stop.setBackgroundResource(R.drawable.jizustart_down);
                 }else {
                         ButJizu_start_stop.setBackgroundResource(R.drawable.jizustart_up);
                 }
 
-                modbus_salve.setZhiBanStartStop(sharedPreferences.getInt("值班运行按键",0));
+                modbusSlaveUnit.setZhiBanStartStop(sharedPreferences.getInt("值班运行按键",0));
                 if (1 == sharedPreferences.getInt("值班运行按键",0)){
                         ButZhiban_start_stop.setBackgroundResource(R.drawable.zhiban_down);
                 }else {
                         ButZhiban_start_stop.setBackgroundResource(R.drawable.zhiban_up);
                 }
 
-                modbus_salve.setFuYaStartStop(sharedPreferences.getInt("负压运行按键",0));
+                modbusSlaveUnit.setFuYaStartStop(sharedPreferences.getInt("负压运行按键",0));
                 if (1 == sharedPreferences.getInt("负压运行按键",0)){
                         ButFuya_start_stop.setBackgroundResource(R.drawable.fuya_down);
                 }else {
@@ -316,14 +316,14 @@ public class MainActivity extends Activity {
                         }
                 }
 
-                modbus_save_1.stop = true;
+                modbusSlaveCtrl.stop = true;
         }
 
         @Override
         protected void onResume() {
                 super.onResume();
 
-                modbus_save_1.stop = false;
+                modbusSlaveCtrl.stop = false;
                 keyMode = sharedUintSet.getInt("按键模式",0);
 
                 if (timer1!=null){
@@ -348,28 +348,28 @@ public class MainActivity extends Activity {
 
                                                         //机组起停，值班起停，负压起停的脉冲模式
                                                         //按下相应按键，跳变到高电平，持续7s，跳变回低电平
-                                                        if (modbus_salve.getJiZuStartStop() == 1) {
+                                                        if (modbusSlaveUnit.getJiZuStartStop() == 1) {
                                                                 jiZuQiTingCount++;
                                                         }
                                                         if (jiZuQiTingCount > 7) {
                                                                 jiZuQiTingCount = 0;
-                                                                modbus_salve.setJiZuStartStop((short) 0);
+                                                                modbusSlaveUnit.setJiZuStartStop((short) 0);
                                                         }
 
-                                                        if (modbus_salve.getZhiBanStartStop() == 1) {
+                                                        if (modbusSlaveUnit.getZhiBanStartStop() == 1) {
                                                                 zhiBanQiTingCount++;
                                                         }
                                                         if (zhiBanQiTingCount > 7) {
                                                                 zhiBanQiTingCount = 0;
-                                                                modbus_salve.setZhiBanStartStop((short) 0);
+                                                                modbusSlaveUnit.setZhiBanStartStop((short) 0);
                                                         }
 
-                                                        if (modbus_salve.getFuYaStartStop() == 1) {
+                                                        if (modbusSlaveUnit.getFuYaStartStop() == 1) {
                                                                 fuYaQiTingCount++;
                                                         }
                                                         if (fuYaQiTingCount > 7) {
                                                                 fuYaQiTingCount = 0;
-                                                                modbus_salve.setFuYaStartStop((short) 0);
+                                                                modbusSlaveUnit.setFuYaStartStop((short) 0);
                                                         }
 
                                                 }
@@ -440,11 +440,11 @@ public class MainActivity extends Activity {
                                         public void run() {
                                                 callPhone();
 
-                                                if (modbus_save_1.getYangQiChaoYaValue()==1){
+                                                if (modbusSlaveCtrl.getYangQiChaoYaValue()==1){
                                                         ButOxygen_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButOxygen_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButOxygen_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if(modbus_save_1.getyangQiQianYa()==1){
+                                                }else if(modbusSlaveCtrl.getyangQiQianYa()==1){
                                                         ButOxygen_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButOxygen_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButOxygen_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -454,11 +454,11 @@ public class MainActivity extends Activity {
                                                         ButOxygen_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_save_1.getYaSuoKongQiChaoYa()==1){
+                                                if (modbusSlaveCtrl.getYaSuoKongQiChaoYa()==1){
                                                         ButPressAirGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButPressAirGas_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButPressAirGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if(modbus_save_1.getYaSUoKongQiQianYa()==1){
+                                                }else if(modbusSlaveCtrl.getYaSUoKongQiQianYa()==1){
                                                         ButPressAirGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButPressAirGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButPressAirGas_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -468,11 +468,11 @@ public class MainActivity extends Activity {
                                                         ButPressAirGas_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if(modbus_save_1.getXiaoQiChaoYa()==1){
+                                                if(modbusSlaveCtrl.getXiaoQiChaoYa()==1){
                                                         ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButLaughingGas_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButLaughingGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if(modbus_save_1.getXiaoQiQianYa()==1){
+                                                }else if(modbusSlaveCtrl.getXiaoQiQianYa()==1){
                                                         ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButLaughingGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButLaughingGas_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -482,11 +482,11 @@ public class MainActivity extends Activity {
                                                         ButLaughingGas_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_save_1.getErYangHuaYanChaoYa()==1){
+                                                if (modbusSlaveCtrl.getErYangHuaYanChaoYa()==1){
                                                         ButCarbon_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButCarbon_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButCarbon_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if (modbus_save_1.getErYangHuaTanQianYa()==1){
+                                                }else if (modbusSlaveCtrl.getErYangHuaTanQianYa()==1){
                                                         ButCarbon_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButCarbon_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButCarbon_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -496,11 +496,11 @@ public class MainActivity extends Activity {
                                                         ButCarbon_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_save_1.getFuYaXiYinChaoYa()==1){
+                                                if (modbusSlaveCtrl.getFuYaXiYinChaoYa()==1){
                                                         ButNegativePressure_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButNegativePressure_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButNegativePressure_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if (modbus_save_1.getFuYaXiYinQianYa()==1){
+                                                }else if (modbusSlaveCtrl.getFuYaXiYinQianYa()==1){
                                                         ButNegativePressure_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButNegativePressure_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButNegativePressure_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -510,11 +510,11 @@ public class MainActivity extends Activity {
                                                         ButNegativePressure_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_save_1.getYaQiChaoYa()==1){
+                                                if (modbusSlaveCtrl.getYaQiChaoYa()==1){
                                                         ButArgonGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButArgonGas_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButArgonGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if (modbus_save_1.getYaQiQianYa()==1){
+                                                }else if (modbusSlaveCtrl.getYaQiQianYa()==1){
                                                         ButArgonGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButArgonGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButArgonGas_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -524,11 +524,11 @@ public class MainActivity extends Activity {
                                                         ButArgonGas_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_save_1.getDanQiChaoYa()==1){
+                                                if (modbusSlaveCtrl.getDanQiChaoYa()==1){
                                                         ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if(modbus_save_1.getDanQiQianYa()==1){
+                                                }else if(modbusSlaveCtrl.getDanQiQianYa()==1){
                                                         ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
                                                         ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.init_ing);
@@ -538,7 +538,7 @@ public class MainActivity extends Activity {
                                                         ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_save_1.getGasStatus()!=0){
+                                                if (modbusSlaveCtrl.getGasStatus()!=0){
                                                         beepOn();
                                                 }else {
                                                         beepOff();
@@ -567,7 +567,8 @@ public class MainActivity extends Activity {
 
                                         public void run() {
 
-                                                tempFloat = modbus_salve.getWenDu()/10.0;
+                                              //  tempFloat = modbusSlaveUnit.getWenDu()/10.0;
+                                                tempFloat = modbusSlaveCtrl.getWenDu()/10.0;
                                                 tempFloatTemp = wenDuSetTemp/10.0;
 
                                                 String temp = String.format(Locale.US,"%.1f",tempFloat);
@@ -576,23 +577,24 @@ public class MainActivity extends Activity {
                                                 wendu_DisplaySet_Change++;
 
                                                 if (wendu_DisplaySet_Change < 30) {
-                                                        modbus_salve.allowWriteWenDuSet = false;
+                                                        modbusSlaveUnit.allowWriteWenDuSet = false;
 
                                                         tv_WenduDispay.setText(tempTemp+"℃");
                                                 } else {
                                                         tv_WenduDispay.setText(temp+"℃");
                                                         if (wendu_DisplaySet_Change<33){
-                                                                modbus_salve.setWenDuSet(wenDuSetTemp);
+                                                                modbusSlaveUnit.setWenDuSet(wenDuSetTemp);
                                                                 wenDuSetStatus=false;
-                                                                modbus_salve.allowWriteWenDuSet = true;
+                                                                modbusSlaveUnit.allowWriteWenDuSet = true;
                                                         }else {
-                                                                wenDuSetTemp=modbus_salve.getWenDuSet();
+                                                                wenDuSetTemp=modbusSlaveUnit.getWenDuSet();
                                                                 wendu_DisplaySet_Change=34;
                                                         }
                                                 }
 
 
-                                                humiFloat = modbus_salve.getShiDu()/10.0;
+                                             //   humiFloat = modbusSlaveUnit.getShiDu()/10.0;
+                                                humiFloat = modbusSlaveCtrl.getShiDu()/10.0;
                                                 humiFloatTemp = shiDuSetTemp/10.0;
 
                                                 String humi = String.format(Locale.US,"%.1f",humiFloat);
@@ -601,111 +603,113 @@ public class MainActivity extends Activity {
                                                 shidu_DisplaySet_Change++;
 
                                                 if (shidu_DisplaySet_Change < 30) {
-                                                        modbus_salve.allowWriteShiDuSet = false;
+                                                        modbusSlaveUnit.allowWriteShiDuSet = false;
                                                         tv_ShiduDispay.setText(humiTemp+"RH");
                                                 } else {
                                                         tv_ShiduDispay.setText(humi+"RH");
                                                         if (shidu_DisplaySet_Change<33){
-                                                                modbus_salve.setShiDuSet(shiDuSetTemp);
+                                                                modbusSlaveUnit.setShiDuSet(shiDuSetTemp);
                                                                 shiDuSetStatus=false;
-                                                                modbus_salve.allowWriteShiDuSet = true;
+                                                                modbusSlaveUnit.allowWriteShiDuSet = true;
                                                         }else {
-                                                                shiDuSetTemp=modbus_salve.getShiDuSet();
+                                                                shiDuSetTemp=modbusSlaveUnit.getShiDuSet();
                                                                 shidu_DisplaySet_Change = 34;
                                                         }
                                                 }
 
-                                                yaChaFloat = Modbus_Slav1.pressFromLocal/10.0;           //默认0-100pa
+                                                yaChaFloat = modbusSlaveCtrl.getPress()/10.0;           //默认0-100pa
 
-                                                if (modbus_salve.yaChaLiangCheng == 0){                  //0-50Pa
-                                                        yaChaFloat = Modbus_Slav1.pressFromLocal/20.0;
-                                                }else if(modbus_salve.yaChaLiangCheng == 2){            //-50-+50Pa
-                                                        yaChaFloat = (Modbus_Slav1.pressFromLocal - 500)/10;
+                                                if (modbusSlaveUnit.yaChaLiangCheng == 0){                  //0-50Pa
+                                                        yaChaFloat = modbusSlaveCtrl.getPress()/20.0;
+                                                }else if(modbusSlaveUnit.yaChaLiangCheng == 2){            //-50-+50Pa
+                                                        yaChaFloat = (modbusSlaveCtrl.getPress() - 500)/10;
                                                 }
 
                                                 String yaCha = String.format(Locale.US,"%.1f",yaChaFloat);
 
                                                 tv_YaChaDispay.setText(yaCha+"Pa");
 
-                                                if (modbus_salve.getFengJiZhuangTai() == 1) {
+                                                if (modbusSlaveUnit.getFengJiZhuangTai() == 1) {
                                                         ButJizhuyunxing_led.setBackgroundResource(R.drawable.qitizhengchang);
                                                 } else {
                                                         ButJizhuyunxing_led.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
 
-                                                if (modbus_salve.getZhiBanZhuangTai() == 1) {
+                                                if (modbusSlaveUnit.getZhiBanZhuangTai() == 1) {
                                                         ButZhibanyunxing_led.setBackgroundResource(R.drawable.qitizhengchang);
                                                 } else {
                                                         ButZhibanyunxing_led.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_salve.getFuYaZhuangtai() == 1) {
+                                                if (modbusSlaveUnit.getFuYaZhuangtai() == 1) {
                                                         ButFuyayunxing_led.setBackgroundResource(R.drawable.qitizhengchang);
                                                 } else {
                                                         ButFuyayunxing_led.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_salve.getFengJiGuZhang() == 1) {
+                                                if (modbusSlaveUnit.getFengJiGuZhang() == 1) {
                                                         ButJizhuGuzhang_led.setBackgroundResource(R.drawable.qitichaoya);
                                                 } else {
                                                         ButJizhuGuzhang_led.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbus_salve.getGaoXiao() == 1) {
+                                                if (modbusSlaveUnit.getGaoXiao() == 1) {
                                                         ButGaoXiao_led.setBackgroundResource(R.drawable.qitichaoya);
                                                 } else {
                                                         ButGaoXiao_led.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                editor.putInt("回风温度", modbus_salve.getWenDu());
-                                                editor.putInt("回风湿度", modbus_salve.getShiDu());
-                                                editor.putInt("设定温度", modbus_salve.getWenDuSet());
-                                                editor.putInt("设定湿度", modbus_salve.getShiDuSet());
+                                             //   editor.putInt("回风温度", modbusSlaveUnit.getWenDu());
+                                                editor.putInt("回风温度", modbusSlaveCtrl.getWenDu());
+                                           //     editor.putInt("回风湿度", modbusSlaveUnit.getShiDu());
+                                                editor.putInt("回风湿度", modbusSlaveCtrl.getShiDu());
+                                                editor.putInt("设定温度", modbusSlaveUnit.getWenDuSet());
+                                                editor.putInt("设定湿度", modbusSlaveUnit.getShiDuSet());
 
-                                                editor.putInt("机组状态", modbus_salve.getFengJiZhuangTai());
-                                                editor.putInt("冷水阀", modbus_salve.getColdWaterValveOpening());
-                                                editor.putInt("热水阀", modbus_salve.getHotWaterValveOpening());
-                                                editor.putInt("加湿器", modbus_salve.getHumidifieOpening());
-                                                editor.putInt("新风温度", modbus_salve.getTheAirTemperature());
+                                                editor.putInt("机组状态", modbusSlaveUnit.getFengJiZhuangTai());
+                                                editor.putInt("冷水阀", modbusSlaveUnit.getColdWaterValveOpening());
+                                                editor.putInt("热水阀", modbusSlaveUnit.getHotWaterValveOpening());
+                                                editor.putInt("加湿器", modbusSlaveUnit.getHumidifieOpening());
+                                                editor.putInt("新风温度", modbusSlaveUnit.getTheAirTemperature());
 
-                                                editor.putInt("上位机心跳监控点", modbus_salve.getUpperComputerHeartBeatMonitoringPoint());
-                                                editor.putInt("上位机手自动监控点", modbus_salve.getUpperComputerHandAutomaticallyMonitoringPoint());
-                                                editor.putInt("上位机风机状态监控点", modbus_salve.getUpperComputerFengjiZHuangTaiMonitoringPoint());
-                                                editor.putInt("上位机盘管低温监控点", modbus_salve.getUpperComputerZhongXiaoMonitoringPoint());
-                                                editor.putInt("上位机高效报警监控点", modbus_salve.getUpperComputerGaoXiaoMonitoringPoint());
-                                                editor.putInt("上位机中效报警监控点", modbus_salve.getUpperComputerChuXiaoMonitoringPoint());
+                                                editor.putInt("上位机心跳监控点", modbusSlaveUnit.getUpperComputerHeartBeatMonitoringPoint());
+                                                editor.putInt("上位机手自动监控点", modbusSlaveUnit.getUpperComputerHandAutomaticallyMonitoringPoint());
+                                                editor.putInt("上位机风机状态监控点", modbusSlaveUnit.getUpperComputerFengjiZHuangTaiMonitoringPoint());
+                                                editor.putInt("上位机盘管低温监控点", modbusSlaveUnit.getUpperComputerZhongXiaoMonitoringPoint());
+                                                editor.putInt("上位机高效报警监控点", modbusSlaveUnit.getUpperComputerGaoXiaoMonitoringPoint());
+                                                editor.putInt("上位机中效报警监控点", modbusSlaveUnit.getUpperComputerChuXiaoMonitoringPoint());
 
 
-                                                editor.putInt("上位机电加热1监控点", modbus_salve.getUpperComputerElectricWarmOneMonitoringPoint());
-                                                editor.putInt("上位机电加热2监控点", modbus_salve.getUpperComputerElectricWarmTwoMonitoringPoint());
-                                                editor.putInt("上位机电加热3监控点", modbus_salve.getUpperComputerElectricWarmThreeMonitoringPoint());
-                                                editor.putInt("上位机电加热高温监控点", modbus_salve.getUpperComputerElectricWarmHighTemperatureMonitoringPoint());
-                                                editor.putInt("上位机风机缺风监控点", modbus_salve.getUpperComputerFengJiQueFengMonitoringPoint());
-                                                editor.putInt("上位机灭菌监控点", modbus_salve.getUpperComputerSterilizationMonitoringPoint());
-                                                editor.putInt("上位机风机已启动监控点", modbus_salve.getUpperComputerFengJiStartMonitoringPoint());
-                                                editor.putInt("上位机排风机已启动监控点", modbus_salve.getUpperComputerPaiFengJiStartMonitoringPoint());
-                                                editor.putInt("上位机值班已启动监控点", modbus_salve.getUpperComputerZhiBanStartMonitoringPoint());
-                                                editor.putInt("上位机负压启动监控点", modbus_salve.getUpperComputerFuYaStartMonitoringPoint());
-                                                editor.putInt("上位机电预热1监控点", modbus_salve.getUpperComputerElectricPreheatOneMonitoringPoint());
-                                                editor.putInt("上位机电预热2监控点", modbus_salve.getUpperComputerElectricPreheatTwoMonitoringPoint());
-                                                editor.putInt("上位机电预热3监控点", modbus_salve.getUpperComputerElectricPreheatThreeMonitoringPoint());
-                                                editor.putInt("上位机电预热高温监控点", modbus_salve.getUpperComputerElectricPreheatHighTemperatureMonitoringPoint());
-                                                editor.putInt("上位机压缩机1运行监控点", modbus_salve.getUpperComputerCompressorOneStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机2运行监控点", modbus_salve.getUpperComputerCompressorTwoStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机3运行监控点", modbus_salve.getUpperComputerCompressorThreeStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机4运行监控点", modbus_salve.getUpperComputerCompressorFourStartMonitoringPoint());
-                                                editor.putInt("上位机压缩机1故障监控点", modbus_salve.getUpperComputerCompressorOneBreakdownMonitoringPoint());
-                                                editor.putInt("上位机压缩机2故障监控点", modbus_salve.getUpperComputerCompressorTwoBreakdownMonitoringPoint());
-                                                editor.putInt("上位机压缩机3故障监控点", modbus_salve.getUpperComputerCompressorThreeBreakdownMonitoringPoint());
-                                                editor.putInt("上位机压缩机4故障监控点", modbus_salve.getUpperComputerCompressorFourBreakdownMonitoringPoint());
-                                                editor.putInt("冬夏季", modbus_salve.getWinterInSummer());
+                                                editor.putInt("上位机电加热1监控点", modbusSlaveUnit.getUpperComputerElectricWarmOneMonitoringPoint());
+                                                editor.putInt("上位机电加热2监控点", modbusSlaveUnit.getUpperComputerElectricWarmTwoMonitoringPoint());
+                                                editor.putInt("上位机电加热3监控点", modbusSlaveUnit.getUpperComputerElectricWarmThreeMonitoringPoint());
+                                                editor.putInt("上位机电加热高温监控点", modbusSlaveUnit.getUpperComputerElectricWarmHighTemperatureMonitoringPoint());
+                                                editor.putInt("上位机风机缺风监控点", modbusSlaveUnit.getUpperComputerFengJiQueFengMonitoringPoint());
+                                                editor.putInt("上位机灭菌监控点", modbusSlaveUnit.getUpperComputerSterilizationMonitoringPoint());
+                                                editor.putInt("上位机风机已启动监控点", modbusSlaveUnit.getUpperComputerFengJiStartMonitoringPoint());
+                                                editor.putInt("上位机排风机已启动监控点", modbusSlaveUnit.getUpperComputerPaiFengJiStartMonitoringPoint());
+                                                editor.putInt("上位机值班已启动监控点", modbusSlaveUnit.getUpperComputerZhiBanStartMonitoringPoint());
+                                                editor.putInt("上位机负压启动监控点", modbusSlaveUnit.getUpperComputerFuYaStartMonitoringPoint());
+                                                editor.putInt("上位机电预热1监控点", modbusSlaveUnit.getUpperComputerElectricPreheatOneMonitoringPoint());
+                                                editor.putInt("上位机电预热2监控点", modbusSlaveUnit.getUpperComputerElectricPreheatTwoMonitoringPoint());
+                                                editor.putInt("上位机电预热3监控点", modbusSlaveUnit.getUpperComputerElectricPreheatThreeMonitoringPoint());
+                                                editor.putInt("上位机电预热高温监控点", modbusSlaveUnit.getUpperComputerElectricPreheatHighTemperatureMonitoringPoint());
+                                                editor.putInt("上位机压缩机1运行监控点", modbusSlaveUnit.getUpperComputerCompressorOneStartMonitoringPoint());
+                                                editor.putInt("上位机压缩机2运行监控点", modbusSlaveUnit.getUpperComputerCompressorTwoStartMonitoringPoint());
+                                                editor.putInt("上位机压缩机3运行监控点", modbusSlaveUnit.getUpperComputerCompressorThreeStartMonitoringPoint());
+                                                editor.putInt("上位机压缩机4运行监控点", modbusSlaveUnit.getUpperComputerCompressorFourStartMonitoringPoint());
+                                                editor.putInt("上位机压缩机1故障监控点", modbusSlaveUnit.getUpperComputerCompressorOneBreakdownMonitoringPoint());
+                                                editor.putInt("上位机压缩机2故障监控点", modbusSlaveUnit.getUpperComputerCompressorTwoBreakdownMonitoringPoint());
+                                                editor.putInt("上位机压缩机3故障监控点", modbusSlaveUnit.getUpperComputerCompressorThreeBreakdownMonitoringPoint());
+                                                editor.putInt("上位机压缩机4故障监控点", modbusSlaveUnit.getUpperComputerCompressorFourBreakdownMonitoringPoint());
+                                                editor.putInt("冬夏季", modbusSlaveUnit.getWinterInSummer());
 
                                                 editor.apply();//提交修改
 
-                                                modbus_salve.SLAV_addr = sharedUintSet.getInt("从机地址",1);
-                                                modbus_salve.yaChaLiangCheng = sharedUintSet.getInt("压差量程",0);
-                                                modbus_salve.xieYiLeiXing = sharedUintSet.getInt("协议类型",0);
+                                                modbusSlaveUnit.SLAV_addr = sharedUintSet.getInt("从机地址",1);
+                                                modbusSlaveUnit.yaChaLiangCheng = sharedUintSet.getInt("压差量程",0);
+                                                modbusSlaveUnit.xieYiLeiXing = sharedUintSet.getInt("协议类型",0);
 
                                         }
 
@@ -844,16 +848,16 @@ public class MainActivity extends Activity {
                 if (1 == keyMode){
 
                         //  电平翻转模式
-                        if(modbus_salve.getJiZuStartStop()==1)
+                        if(modbusSlaveUnit.getJiZuStartStop()==1)
                         {
-                                modbus_salve.setJiZuStartStop((short)0);
+                                modbusSlaveUnit.setJiZuStartStop((short)0);
                                 ButJizu_start_stop.setBackgroundResource(R.drawable.jizustart_up);
                                 editor.putInt("机组起停按键",0);
                                 editor.apply();
                         }
                         else
                         {
-                                modbus_salve.setJiZuStartStop((short)1);
+                                modbusSlaveUnit.setJiZuStartStop((short)1);
                                 ButJizu_start_stop.setBackgroundResource(R.drawable.jizustart_down);
                                 editor.putInt("机组起停按键",1);
                                 editor.apply();
@@ -861,7 +865,7 @@ public class MainActivity extends Activity {
                 }else {
 
                         //脉冲模式
-                        modbus_salve.setJiZuStartStop((short) 1);
+                        modbusSlaveUnit.setJiZuStartStop((short) 1);
 
                 }
         }
@@ -874,16 +878,16 @@ public class MainActivity extends Activity {
 
                 if (1 == keyMode){
 
-                        if(modbus_salve.getZhiBanStartStop()==1)
+                        if(modbusSlaveUnit.getZhiBanStartStop()==1)
                         {
-                                modbus_salve.setZhiBanStartStop((short)0);
+                                modbusSlaveUnit.setZhiBanStartStop((short)0);
                                 ButZhiban_start_stop.setBackgroundResource(R.drawable.zhiban_up);
                                 editor.putInt("值班运行按键",0);
                                 editor.apply();
                         }
                         else
                         {
-                                modbus_salve.setZhiBanStartStop((short)1);
+                                modbusSlaveUnit.setZhiBanStartStop((short)1);
                                 ButZhiban_start_stop.setBackgroundResource(R.drawable.zhiban_down);
                                 editor.putInt("值班运行按键",1);
                                 editor.apply();
@@ -891,7 +895,7 @@ public class MainActivity extends Activity {
 
                 }else{
 
-                        modbus_salve.setZhiBanStartStop((short) 1);
+                        modbusSlaveUnit.setZhiBanStartStop((short) 1);
 
                 }
         }
@@ -906,16 +910,16 @@ public class MainActivity extends Activity {
                 if (1 == keyMode){
 
 
-                        if( modbus_salve.getFuYaStartStop()==1)
+                        if( modbusSlaveUnit.getFuYaStartStop()==1)
                         {
-                                modbus_salve.setFuYaStartStop((short)0);
+                                modbusSlaveUnit.setFuYaStartStop((short)0);
                                 ButFuya_start_stop.setBackgroundResource(R.drawable.fuya_up);
                                 editor.putInt("负压运行按键",0);
                                 editor.apply();
                         }
                         else
                         {
-                                modbus_salve.setFuYaStartStop((short)1);
+                                modbusSlaveUnit.setFuYaStartStop((short)1);
                                 ButFuya_start_stop.setBackgroundResource(R.drawable.fuya_down);
                                 editor.putInt("负压运行按键",1);
                                 editor.apply();
@@ -923,7 +927,7 @@ public class MainActivity extends Activity {
 
                 }else{
 
-                        modbus_salve.setFuYaStartStop((short) 1);
+                        modbusSlaveUnit.setFuYaStartStop((short) 1);
 
                 }
         }
@@ -1141,11 +1145,11 @@ public class MainActivity extends Activity {
 
         public void Butbeijingyinyue(View v) {
 
-                if (modbus_save_1.getBackMusic_upDown()!=0){
-                        musicValue = modbus_save_1.getBackMusic_upDown();
-                        modbus_save_1.setBackMusic_upDown((short) 0);
+                if (modbusSlaveCtrl.getBackMusic_upDown()!=0){
+                        musicValue = modbusSlaveCtrl.getBackMusic_upDown();
+                        modbusSlaveCtrl.setBackMusic_upDown((short) 0);
                 }else{
-                        modbus_save_1.setBackMusic_upDown((short) musicValue);
+                        modbusSlaveCtrl.setBackMusic_upDown((short) musicValue);
                 }
         }
 
@@ -1155,12 +1159,12 @@ public class MainActivity extends Activity {
          */
 
         public void Butyinyuezen(View v) {
-                music_UpDown=modbus_save_1.getBackMusic_upDown();
+                music_UpDown=modbusSlaveCtrl.getBackMusic_upDown();
                 music_UpDown++;
                 if (music_UpDown > 3) {
                         music_UpDown = 3;
                 }
-                modbus_save_1.setBackMusic_upDown(music_UpDown);
+                modbusSlaveCtrl.setBackMusic_upDown(music_UpDown);
         }
 
         /***
@@ -1169,13 +1173,13 @@ public class MainActivity extends Activity {
          */
 
         public void Butyinyuejian(View v) {
-                music_UpDown=modbus_save_1.getBackMusic_upDown();
+                music_UpDown=modbusSlaveCtrl.getBackMusic_upDown();
                 music_UpDown--;
                 if (music_UpDown < 0) {
                         music_UpDown = 0;
                 }
 
-                modbus_save_1.setBackMusic_upDown(music_UpDown);
+                modbusSlaveCtrl.setBackMusic_upDown(music_UpDown);
         }
 
         public void ButContacts(View v){
@@ -1190,7 +1194,7 @@ public class MainActivity extends Activity {
 
         public void Butzhaoming_1(View v) {
                 if (ButLightling_1_variabe == 1) {
-                        modbus_save_1.setLightling_1((short) 0);
+                        modbusSlaveCtrl.setLightling_1((short) 0);
                         ButLightling_1_variabe = 0;
                         ButLightling_1.setBackgroundResource(R.drawable.led_off);
                         editor.putInt("照明1",0);
@@ -1199,7 +1203,7 @@ public class MainActivity extends Activity {
                 } else {
                         ButLightling_1_variabe = 1;
                         ButLightling_1.setBackgroundResource(R.drawable.led_on);
-                        modbus_save_1.setLightling_1((short) 1);
+                        modbusSlaveCtrl.setLightling_1((short) 1);
                         editor.putInt("照明1",1);
                         editor.apply();
                 }
@@ -1213,7 +1217,7 @@ public class MainActivity extends Activity {
         public void Butzhaoming_2(View v) {
 
                 if (ButLightling_2_variabe == 1) {
-                        modbus_save_1.setLightling_2((short) 0);
+                        modbusSlaveCtrl.setLightling_2((short) 0);
                         ButLightling_2_variabe = 0;
                         ButLightling_2.setBackgroundResource(R.drawable.led_off);
                         editor.putInt("照明2",0);
@@ -1222,7 +1226,7 @@ public class MainActivity extends Activity {
                 } else {
                         ButLightling_2_variabe = 1;
                         ButLightling_2.setBackgroundResource(R.drawable.led_on);
-                        modbus_save_1.setLightling_2((short) 1);
+                        modbusSlaveCtrl.setLightling_2((short) 1);
                         editor.putInt("照明2",1);
                         editor.apply();
                 }
@@ -1237,7 +1241,7 @@ public class MainActivity extends Activity {
         public void Butwuyingdeng(View v) {
                 if (ButShadowless_Lamp_variabe == 1)//无影灯
                 {
-                        modbus_save_1.setShadowless_Lamp((short) 0);
+                        modbusSlaveCtrl.setShadowless_Lamp((short) 0);
                         ButShadowless_Lamp_variabe = 0;//无影灯
                         ButShadowless_Lamp.setBackgroundResource(R.drawable.led_off);
                         editor.putInt("无影灯",0);
@@ -1245,7 +1249,7 @@ public class MainActivity extends Activity {
                 } else {
                         ButShadowless_Lamp_variabe = 1;//无影灯
                         ButShadowless_Lamp.setBackgroundResource(R.drawable.led_on);
-                        modbus_save_1.setShadowless_Lamp((short) 1);
+                        modbusSlaveCtrl.setShadowless_Lamp((short) 1);
                         editor.putInt("无影灯",1);
                         editor.apply();
                 }
@@ -1260,7 +1264,7 @@ public class MainActivity extends Activity {
         public void Butshuzhongdeng(View v) {
                 if (ButIntraoperative_Lamp_variabe == 1)//术中灯
                 {
-                        modbus_save_1.setIntraoperative_Lamp((short) 0);
+                        modbusSlaveCtrl.setIntraoperative_Lamp((short) 0);
                         ButIntraoperative_Lamp_variabe = 0;
                         ButIntraoperative_Lamp.setBackgroundResource(R.drawable.led_off);
                         editor.putInt("术中灯",0);
@@ -1268,7 +1272,7 @@ public class MainActivity extends Activity {
                 } else {
                         ButIntraoperative_Lamp_variabe = 1;
                         ButIntraoperative_Lamp.setBackgroundResource(R.drawable.led_on);
-                        modbus_save_1.setIntraoperative_Lamp((short) 1);
+                        modbusSlaveCtrl.setIntraoperative_Lamp((short) 1);
                         editor.putInt("术中灯",1);
                         editor.apply();
                 }
@@ -1281,7 +1285,7 @@ public class MainActivity extends Activity {
 
         public void Butguanpiandeng(View v) {
                 if (But_OfLightThe_Lamp_variabe == 1) {
-                        modbus_save_1.setOfLightThe_Lamp((short) 0);
+                        modbusSlaveCtrl.setOfLightThe_Lamp((short) 0);
                         But_OfLightThe_Lamp_variabe = 0;
                         But_OfLightThe_Lamp.setBackgroundResource(R.drawable.led_off);
                         editor.putInt("观片灯",0);
@@ -1289,7 +1293,7 @@ public class MainActivity extends Activity {
                 } else {
                         But_OfLightThe_Lamp_variabe = 1;
                         But_OfLightThe_Lamp.setBackgroundResource(R.drawable.led_on);
-                        modbus_save_1.setOfLightThe_Lamp((short) 1);
+                        modbusSlaveCtrl.setOfLightThe_Lamp((short) 1);
                         editor.putInt("观片灯",1);
                         editor.apply();
                 }
@@ -1303,7 +1307,7 @@ public class MainActivity extends Activity {
 
         public void Butbeiyong(View v) {
                 if (ButPrepare_variabe == 1) {
-                        modbus_save_1.setPrepare((short) 0);
+                        modbusSlaveCtrl.setPrepare((short) 0);
                         ButPrepare_variabe = 0;
                         ButPrepare.setBackgroundResource(R.drawable.led_off);
                         editor.putInt("备用",0);
@@ -1312,7 +1316,7 @@ public class MainActivity extends Activity {
                 } else {
                         ButPrepare_variabe = 1;
                         ButPrepare.setBackgroundResource(R.drawable.led_on);
-                        modbus_save_1.setPrepare((short) 1);
+                        modbusSlaveCtrl.setPrepare((short) 1);
                         editor.putInt("备用",1);
                         editor.apply();
                 }
@@ -1325,7 +1329,7 @@ public class MainActivity extends Activity {
 
         public void Butxiaoyin(View v) {
                 if (ButErasure_variabe == 1) {
-                        modbus_save_1.setErasure((short) 0);
+                        modbusSlaveCtrl.setErasure((short) 0);
                         ButErasure_variabe = 0;
                         ButErasure.setBackgroundResource(R.drawable.jingyin_press);
                         editor.putInt("消音",0);
@@ -1333,7 +1337,7 @@ public class MainActivity extends Activity {
                 } else {
                         ButErasure_variabe = 1;
                         ButErasure.setBackgroundResource(R.drawable.jingyin);
-                        modbus_save_1.setErasure((short) 1);
+                        modbusSlaveCtrl.setErasure((short) 1);
                         editor.putInt("消音",1);
                         editor.apply();
                 }
@@ -1490,11 +1494,11 @@ public class MainActivity extends Activity {
 
         private void beepOn(){
                 if (ButErasure_variabe==1){
-                        modbus_save_1.setErasure((short) 1);
+                        modbusSlaveCtrl.setErasure((short) 1);
                 }
         }
         private void beepOff(){
-                modbus_save_1.setErasure((short) 0);
+                modbusSlaveCtrl.setErasure((short) 0);
         }
         private void initOnTouchListener(){
                 ButStart_shuoshu.setOnTouchListener(new OnTouchListener() {
