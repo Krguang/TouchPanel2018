@@ -75,7 +75,9 @@ public class Modbus_Slav1 extends Thread {
     public static int pressFromLocal;
     public volatile boolean stop = false;
 
-    public Modbus_Slav1() {
+    private final static Modbus_Slav1 instance = new Modbus_Slav1();
+
+    private Modbus_Slav1() {
 
 
         try {
@@ -87,6 +89,10 @@ public class Modbus_Slav1 extends Thread {
         mInputStream = mserialPort.getInputStream();
         mOutputStream = mserialPort.getOutputStream();
 
+    }
+
+    public static Modbus_Slav1 getInstance(){
+        return instance;
     }
 
 
@@ -104,28 +110,26 @@ public class Modbus_Slav1 extends Thread {
         super.run();
         timer10ms.schedule(taskPoll,10,10);//5ms后开始，每5ms轮询一次
         while (!isInterrupted()) {
-            while(!stop){
-                int size;
-                try {
-                    byte[] reBuf = new byte[128];
-                    if (mInputStream == null) return;
-                    size = mInputStream.read(reBuf);
-                    if (size > 0) {
-                        for (int i =0;i<size;i++){
-                            rxTemp.add((reBuf[i]));
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    try {
-                        mInputStream.close();
-                        mInputStream.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+
+            int size;
+            try {
+                byte[] reBuf = new byte[128];
+                if (mInputStream == null) return;
+                size = mInputStream.read(reBuf);
+                if (size > 0) {
+                    for (int i =0;i<size;i++){
+                        rxTemp.add((reBuf[i]));
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                try {
+                    mInputStream.close();
+                    mInputStream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
-
         }
 
     }

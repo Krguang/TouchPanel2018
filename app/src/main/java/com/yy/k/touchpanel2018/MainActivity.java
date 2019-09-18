@@ -189,8 +189,8 @@ public class MainActivity extends Activity {
         TimerTask task4;
 
         Intent intent = new Intent();
-        Modbus_Slav modbus_salve = new Modbus_Slav();
-        Modbus_Slav1 modbus_save_1 = new Modbus_Slav1();
+        Modbus_Slav modbus_salve = Modbus_Slav.getInstance();
+        Modbus_Slav1 modbus_save_1 = Modbus_Slav1.getInstance();
         TelephoneSend telephoneSend = new TelephoneSend();
 
         SharedPreferences sharedPreferences;
@@ -301,29 +301,29 @@ public class MainActivity extends Activity {
         }
 
 
-        @Override
-        protected void onStop() {
-                super.onStop();
-                if (timer2!=null){
-                        if (task2!=null){
-                                task2.cancel();
-                        }
-                }
-
-                if (timer4!=null){
-                        if (task4!=null){
-                                task4.cancel();
-                        }
-                }
-
-                modbus_save_1.stop = true;
-        }
+//        @Override
+//        protected void onStop() {
+//                super.onStop();
+//                if (timer2!=null){
+//                        if (task2!=null){
+//                                task2.cancel();
+//                        }
+//                }
+//
+//                if (timer4!=null){
+//                        if (task4!=null){
+//                                task4.cancel();
+//                        }
+//                }
+//
+//                modbus_save_1.stop = true;
+//        }
 
         @Override
         protected void onResume() {
                 super.onResume();
 
-                modbus_save_1.stop = false;
+      //          modbus_save_1.stop = false;
                 keyMode = sharedUintSet.getInt("按键模式",0);
 
                 if (timer1!=null){

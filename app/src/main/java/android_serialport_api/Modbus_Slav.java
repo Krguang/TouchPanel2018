@@ -86,7 +86,9 @@ public class Modbus_Slav extends Thread {
 
     private SerialPort mserialPort = null;
 
-    public Modbus_Slav() {
+    private final static Modbus_Slav instance = new Modbus_Slav();
+
+    private Modbus_Slav() {
         try {
             try {
                 mserialPort = getSerialPort();
@@ -107,6 +109,10 @@ public class Modbus_Slav extends Thread {
         mOutputStream.close();
     }
 
+    public static Modbus_Slav getInstance(){
+        return instance;
+    }
+
     /**
      * 数据等待接收
      */
@@ -116,8 +122,6 @@ public class Modbus_Slav extends Thread {
         super.run();
         timer10ms.schedule(taskPoll,10,10);//5ms后开始，每5ms轮询一次
         while (!isInterrupted()) {
-
-
 
             int size;
             try {
