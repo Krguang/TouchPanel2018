@@ -129,7 +129,7 @@ public class UnitMonitoringDataActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        Modbus_Slav.stop_UnitActivity = true;
+    //    Modbus_Slav.stop_UnitActivity = true;
         if (timer1!=null){
             if (task1!=null){
                 task1.cancel();
@@ -140,7 +140,7 @@ public class UnitMonitoringDataActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Modbus_Slav.stop_UnitActivity = false;
+  //      Modbus_Slav.stop_UnitActivity = false;
 
         if (timer1!=null){
             if (task1!=null){
@@ -182,14 +182,23 @@ public class UnitMonitoringDataActivity extends Activity {
                         short WinrerInSummer = (short) sharedPreferences.getInt("冬夏季", 0);
 
 
-                        huiFengWenDuDouble = Modbus_Slav.wenDu / 10.0;
-                        huiFengShiDuDoubLe = Modbus_Slav.shiDu /10.0;
-                        sheDingWenDuDouble = Modbus_Slav.wenDuSet / 10.0;
-                        sheDingShiDuDouble = Modbus_Slav.shiDuSet /10.0;
+//                        huiFengWenDuDouble = Modbus_Slav.wenDu / 10.0;
+//                        huiFengShiDuDoubLe = Modbus_Slav.shiDu /10.0;
+//                        sheDingWenDuDouble = Modbus_Slav.wenDuSet / 10.0;
+//                        sheDingShiDuDouble = Modbus_Slav.shiDuSet /10.0;
+//
+//                        humiDouble = Modbus_Slav.HumidifieOpening/10.0;
+//                        coldWaterDouble = Modbus_Slav.ColdWaterValveOpening/10.0;
+//                        hotWaterDouble = Modbus_Slav.HotWaterValveOpening/10.0;
 
-                        humiDouble = Modbus_Slav.HumidifieOpening/10.0;
-                        coldWaterDouble = Modbus_Slav.ColdWaterValveOpening/10.0;
-                        hotWaterDouble = Modbus_Slav.HotWaterValveOpening/10.0;
+                        huiFengWenDuDouble = huiFengWenDu / 10.0;
+                        huiFengShiDuDoubLe = huiFengShiDu /10.0;
+                        sheDingWenDuDouble = sheDingWenDu / 10.0;
+                        sheDingShiDuDouble = sheDingShiDu /10.0;
+
+                        humiDouble = HumidifieOpening/10.0;
+                        coldWaterDouble = ColdWaterValveOpening/10.0;
+                        hotWaterDouble = HotWaterValveOpening/10.0;
 
 
                         String wenDuString = String.format(Locale.US,"%.1f",huiFengWenDuDouble);
