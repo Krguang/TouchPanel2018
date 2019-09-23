@@ -35,22 +35,22 @@ public class Modbus_Slav extends Thread {
     private int jiZuStartStop = 0;
     private int zhiBanStartStop = 0;
     private int fuYaStartStop = 0;
-    private int wenDuSet = 250;
-    private int shiDuSet = 500;
-    private int yaChaSet = 500;
-    private int wenDu = 250;
-    private int shiDu = 500;
-    private int yaCha = 500;
+    public int wenDuSet = 250;
+    public int shiDuSet = 500;
+    public int yaChaSet = 500;
+    public int wenDu = 250;
+    public int shiDu = 500;
+    public int yaCha = 500;
     private int fengJiZhuangTai = 0;
     private int zhiBanZhuangTai = 0;
     private int fuYaZhuangtai = 0;
     private int fengJiGuZhang = 0;
     private int GaoXiao;
 
-    private int ColdWaterValveOpening = 0;//冷水阀
-    private int HotWaterValveOpening = 0;//热水阀
-    private int HumidifieOpening = 0;   //加湿器
-    private int TheAirTemperature = 0;//新风温度
+    public int ColdWaterValveOpening = 0;//冷水阀
+    public int HotWaterValveOpening = 0;//热水阀
+    public int HumidifieOpening = 0;   //加湿器
+    public int TheAirTemperature = 0;//新风温度
 
     private int upperComputerHeartBeatMonitoringPoint = 0;       //上位机心跳监控点
     private int upperComputerHandAutomaticallyMonitoringPoint = 0;//上位机手自动监控点

@@ -214,8 +214,8 @@ public class MainActivity extends Activity {
                 sharedPreferences = getSharedPreferences("ljq", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
                 sharedUintSet = this.getSharedPreferences("uint_set",this.MODE_WORLD_READABLE);
                 editor = sharedPreferences.edit();//获取编辑器
-                modbus_salve.start();
-                modbus_save_1.start();
+                if (!modbus_salve.isAlive()) modbus_salve.start();
+                if (!modbus_save_1.isAlive())modbus_save_1.start();
 
                 InitView();
                 initOnTouchListener();
@@ -561,7 +561,6 @@ public class MainActivity extends Activity {
                         public void run() {
 
                                 telephoneSend.sendDataMaster16();
-                                Log.d(TAG, "run: 发送电话号码");
 
                                 runOnUiThread(new Runnable() {      // UI thread
 

@@ -77,10 +77,16 @@ public class UnitMonitoringDataActivity extends Activity {
 
     Timer timer1 = new Timer();
     TimerTask task1;
+    Modbus_Slav modbusSlave;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.unit_monitoringdata);
+
+
+        modbusSlave = Modbus_Slav.getInstance();
+
 
         bt_bendiControl = (Button) findViewById(R.id.bt_bendicontrol_id);
         bt_chuXiaoWaring = (Button) findViewById(R.id.bt_chuxaiowaring_id);
@@ -123,7 +129,7 @@ public class UnitMonitoringDataActivity extends Activity {
         bt_jinfengflow11 = (Button) findViewById(R.id.bt_jinfengflow11_id);
         bt_jinfengflow12 = (Button) findViewById(R.id.bt_jinfengflow12_id);
         bt_paiFengJiLun = findViewById(R.id.paiFengJi);
-
+        sharedPreferences = getSharedPreferences("ljq", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
     }
 
     @Override
@@ -154,15 +160,25 @@ public class UnitMonitoringDataActivity extends Activity {
 
                     public void run() {
 
-                        short huiFengWenDu = (short) sharedPreferences.getInt("回风温度",0);
-                        short huiFengShiDu = (short) sharedPreferences.getInt("回风湿度",0);
-                        short sheDingWenDu = (short) sharedPreferences.getInt("设定温度",0);
-                        short sheDingShiDu = (short) sharedPreferences.getInt("设定湿度",0);
+//                        short huiFengWenDu = (short) sharedPreferences.getInt("回风温度",0);
+//                        short huiFengShiDu = (short) sharedPreferences.getInt("回风湿度",0);
+//                        short sheDingWenDu = (short) sharedPreferences.getInt("设定温度",0);
+//                        short sheDingShiDu = (short) sharedPreferences.getInt("设定湿度",0);
+//
+//                        short ColdWaterValveOpening = (short) sharedPreferences.getInt("冷水阀", 0);
+//                        short HotWaterValveOpening = (short) sharedPreferences.getInt("热水阀", 0);
+//                        short HumidifieOpening = (short) sharedPreferences.getInt("加湿器", 0);
 
 
-                        short ColdWaterValveOpening = (short) sharedPreferences.getInt("冷水阀", 0);
-                        short HotWaterValveOpening = (short) sharedPreferences.getInt("热水阀", 0);
-                        short HumidifieOpening = (short) sharedPreferences.getInt("加湿器", 0);
+                        huiFengWenDuDouble = modbusSlave.wenDu / 10.0;
+                        huiFengShiDuDoubLe = modbusSlave.shiDu /10.0;
+                        sheDingWenDuDouble = modbusSlave.wenDuSet / 10.0;
+                        sheDingShiDuDouble = modbusSlave.shiDuSet /10.0;
+
+                        humiDouble = modbusSlave.HumidifieOpening/10.0;
+                        coldWaterDouble = modbusSlave.ColdWaterValveOpening/10.0;
+                        hotWaterDouble = modbusSlave.HotWaterValveOpening/10.0;
+
 
                         short UpperComputerHandAutomaticallyMonitoringPoint = (short) sharedPreferences.getInt("上位机手自动监控点", 0);
                         short UpperComputerFengjiZHuangTaiMonitoringPoint = (short) sharedPreferences.getInt("上位机风机状态监控点", 0);
@@ -191,14 +207,14 @@ public class UnitMonitoringDataActivity extends Activity {
 //                        coldWaterDouble = Modbus_Slav.ColdWaterValveOpening/10.0;
 //                        hotWaterDouble = Modbus_Slav.HotWaterValveOpening/10.0;
 
-                        huiFengWenDuDouble = huiFengWenDu / 10.0;
-                        huiFengShiDuDoubLe = huiFengShiDu /10.0;
-                        sheDingWenDuDouble = sheDingWenDu / 10.0;
-                        sheDingShiDuDouble = sheDingShiDu /10.0;
-
-                        humiDouble = HumidifieOpening/10.0;
-                        coldWaterDouble = ColdWaterValveOpening/10.0;
-                        hotWaterDouble = HotWaterValveOpening/10.0;
+//                        huiFengWenDuDouble = huiFengWenDu / 10.0;
+//                        huiFengShiDuDoubLe = huiFengShiDu /10.0;
+//                        sheDingWenDuDouble = sheDingWenDu / 10.0;
+//                        sheDingShiDuDouble = sheDingShiDu /10.0;
+//
+//                        humiDouble = HumidifieOpening/10.0;
+//                        coldWaterDouble = ColdWaterValveOpening/10.0;
+//                        hotWaterDouble = HotWaterValveOpening/10.0;
 
 
                         String wenDuString = String.format(Locale.US,"%.1f",huiFengWenDuDouble);
@@ -532,11 +548,11 @@ public class UnitMonitoringDataActivity extends Activity {
                         }
 
 
-                        String HumidifieOpeningbai = "0" + HumidifieOpening / 100;
-                        String HumidifieOpeningshi = "0" + HumidifieOpening / 10 % 10;
-                        String HumidifieOpeningge = "0" + HumidifieOpening % 10;
-
-                        tv_humidifieOpening.setText(HumidifieOpeningbai.substring(HumidifieOpeningbai.length() - 1, HumidifieOpeningbai.length()) + HumidifieOpeningshi.substring(HumidifieOpeningshi.length() - 1, HumidifieOpeningshi.length()) + "." + HumidifieOpeningge.substring(HumidifieOpeningge.length() - 1, HumidifieOpeningge.length()) + "%");
+//                        String HumidifieOpeningbai = "0" + HumidifieOpening / 100;
+//                        String HumidifieOpeningshi = "0" + HumidifieOpening / 10 % 10;
+//                        String HumidifieOpeningge = "0" + HumidifieOpening % 10;
+//
+//                        tv_humidifieOpening.setText(HumidifieOpeningbai.substring(HumidifieOpeningbai.length() - 1, HumidifieOpeningbai.length()) + HumidifieOpeningshi.substring(HumidifieOpeningshi.length() - 1, HumidifieOpeningshi.length()) + "." + HumidifieOpeningge.substring(HumidifieOpeningge.length() - 1, HumidifieOpeningge.length()) + "%");
 
                         if (UpperComputerHandAutomaticallyMonitoringPoint == 1) {
                             bt_bendicontrol.setBackgroundResource(R.drawable.init_ing);
@@ -546,17 +562,17 @@ public class UnitMonitoringDataActivity extends Activity {
                             bt_yuanchengcontrol.setBackgroundResource(R.drawable.init_ing);
                         }
 
-                        String bai = "0" + ColdWaterValveOpening / 100;
-                        String shi = "0" + ColdWaterValveOpening / 10 % 10;
-                        String ge = "0" + ColdWaterValveOpening % 10;
-
-                        tv_coldWateropening.setText(bai.substring(bai.length() - 1, bai.length()) + shi.substring(shi.length() - 1, shi.length()) + "." + ge.substring(ge.length() - 1, ge.length()) + "%");
-
-                        bai = "0" + HotWaterValveOpening / 100;
-                        shi = "0" + HotWaterValveOpening / 10 % 10;
-                        ge = "0" + HotWaterValveOpening % 10;
-
-                        tv_hotWateropening.setText(bai.substring(bai.length() - 1, bai.length()) + shi.substring(shi.length() - 1, shi.length()) + "." + ge.substring(ge.length() - 1, ge.length()) + "%");
+//                        String bai = "0" + ColdWaterValveOpening / 100;
+//                        String shi = "0" + ColdWaterValveOpening / 10 % 10;
+//                        String ge = "0" + ColdWaterValveOpening % 10;
+//
+//                        tv_coldWateropening.setText(bai.substring(bai.length() - 1, bai.length()) + shi.substring(shi.length() - 1, shi.length()) + "." + ge.substring(ge.length() - 1, ge.length()) + "%");
+//
+//                        bai = "0" + HotWaterValveOpening / 100;
+//                        shi = "0" + HotWaterValveOpening / 10 % 10;
+//                        ge = "0" + HotWaterValveOpening % 10;
+//
+//                        tv_hotWateropening.setText(bai.substring(bai.length() - 1, bai.length()) + shi.substring(shi.length() - 1, shi.length()) + "." + ge.substring(ge.length() - 1, ge.length()) + "%");
 
 
                         if (WinrerInSummer == 1) {
