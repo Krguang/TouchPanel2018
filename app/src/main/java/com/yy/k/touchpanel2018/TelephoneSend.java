@@ -32,7 +32,11 @@ class TelephoneSend {
     short phone_dial_miantiJian;
     short duiJiangJian;
 
-    TelephoneSend(){
+    private final static TelephoneSend instance = new TelephoneSend();
+    public static TelephoneSend getInstance(){
+        return instance;
+    }
+    private TelephoneSend(){
 
         uartInit();
 
