@@ -191,7 +191,7 @@ public class MainActivity extends Activity {
         Intent intent = new Intent();
         Modbus_Slav modbus_salve = Modbus_Slav.getInstance();
         Modbus_Slav1 modbus_save_1 = Modbus_Slav1.getInstance();
-        TelephoneSend telephoneSend = new TelephoneSend();
+        TelephoneSend telephoneSend = TelephoneSend.getInstance();
 
         SharedPreferences sharedPreferences;
         SharedPreferences sharedUintSet;
