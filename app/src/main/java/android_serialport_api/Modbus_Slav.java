@@ -35,10 +35,10 @@ public class Modbus_Slav extends Thread {
     private int jiZuStartStop = 0;
     private int zhiBanStartStop = 0;
     private int fuYaStartStop = 0;
-    public int wenDuSet = 250;
+    public int wenDuSet = 230;
     public int shiDuSet = 500;
     public int yaChaSet = 500;
-    public int wenDu = 250;
+    public int wenDu = 230;
     public int shiDu = 500;
     public int yaCha = 500;
     private int fengJiZhuangTai = 0;

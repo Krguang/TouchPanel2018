@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
         private boolean wenDuSetStatus=false;//温湿度设置按钮第一次按的时候不会改变值，只会显示设定值
         private boolean shiDuSetStatus=false;//此状态为用于判断是否是第一次按
 
-        private int wenDuSetTemp=250;//温度设置缓存，在设置温度时只会改变这个值，跳回温度显示时，这个值会传给setWenDuSet
+        private int wenDuSetTemp=230;//温度设置缓存，在设置温度时只会改变这个值，跳回温度显示时，这个值会传给setWenDuSet
         private int shiDuSetTemp=500;//湿度设置缓存
 
         private Button ButStart_shuoshu;
@@ -130,6 +130,8 @@ public class MainActivity extends Activity {
         private Button ButCarbon_Display_normal;
         private Button ButCarbon_Display_under;
         private Button ButCarbon_Display_over;
+
+        private Button ButItPower;
 
         private Button ButLightling_1;
         private Button ButLightling_2;
@@ -468,6 +470,15 @@ public class MainActivity extends Activity {
                                                         ButPressAirGas_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
+                                                if(modbus_save_1.getXiaoQiChaoYa()==1 || modbus_save_1.getXiaoQiQianYa()==1){
+                                                        ButItPower.setBackgroundResource(R.drawable.qitichaoya);
+                                                }else {
+                                                        ButItPower.setBackgroundResource(R.drawable.qitizhengchang);
+                                                }
+
+                                                ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
+
+                                                /*
                                                 if(modbus_save_1.getXiaoQiChaoYa()==1){
                                                         ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
                                                         ButLaughingGas_Display_under.setBackgroundResource(R.drawable.init_ing);
@@ -481,6 +492,7 @@ public class MainActivity extends Activity {
                                                         ButLaughingGas_Display_under.setBackgroundResource(R.drawable.init_ing);
                                                         ButLaughingGas_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
+                                                */
 
                                                 if (modbus_save_1.getErYangHuaYanChaoYa()==1){
                                                         ButCarbon_Display_normal.setBackgroundResource(R.drawable.init_ing);
@@ -2123,6 +2135,8 @@ public class MainActivity extends Activity {
                 ButCarbon_Display_normal = (Button) findViewById(R.id.eryanghuatanqi_normal_id);
                 ButCarbon_Display_under = (Button) findViewById(R.id.eryanghuatanqi_under_id);
                 ButCarbon_Display_over = (Button) findViewById(R.id.eryanghuatanqi_over_id);
+
+                ButItPower = findViewById(R.id.bt_it_power_id);
 
                 /***
                  * 照明1,2
