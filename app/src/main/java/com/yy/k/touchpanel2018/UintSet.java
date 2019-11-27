@@ -1,7 +1,7 @@
 package com.yy.k.touchpanel2018;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -10,6 +10,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.yy.k.touchpanel2018.R;
+
+import android_serialport_api.Modbus_Slav;
+import utils.SpUtils;
 
 public class UintSet extends Activity {
 
@@ -23,20 +28,19 @@ public class UintSet extends Activity {
     CheckBox maiChong_CB;
     CheckBox dianPing_CB;
 
+    CheckBox liangGuanZhi_CB;
+    CheckBox siGuanZhi_CB;
+
     EditText slaveAdd_ET;
 
-    SharedPreferences sharedUintSet;
-    SharedPreferences.Editor editor;
+    Modbus_Slav modbusSlave = Modbus_Slav.getInstance();
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.uint_set);
-
-        sharedUintSet = this.getSharedPreferences("uint_set",this.MODE_WORLD_READABLE);
-        editor = sharedUintSet.edit();
-
 
         yaCha0_50_CB = findViewById(R.id.yaCha0_50_cb);
         yaCha0_100_CB = findViewById(R.id.yaCha0_100_cb);
@@ -48,24 +52,26 @@ public class UintSet extends Activity {
         maiChong_CB = findViewById(R.id.maiChong_cb);
         dianPing_CB = findViewById(R.id.dianPing_cb);
 
+        liangGuanZhi_CB = findViewById(R.id.liangGuanZhi_cb);
+        siGuanZhi_CB = findViewById(R.id.siGuanZhi_cb);
 
         slaveAdd_ET = findViewById(R.id.slave_add_et);
 
 
         //压差量程 0，1，2 分别对应 0-50Pa,0-100Pa,-50-+50Pa;
 
-        if (sharedUintSet.getInt("压差量程",0) == 0){
+        if (modbusSlave.yaChaLiangCheng == 0){
 
             yaCha0_50_CB.setChecked(true);
             yaCha0_100_CB.setChecked(false);
             yaCha50_50_CB.setChecked(false);
-        }else if (sharedUintSet.getInt("压差量程",0) == 1){
+        }else if (modbusSlave.yaChaLiangCheng == 1){
 
             yaCha0_50_CB.setChecked(false);
             yaCha0_100_CB.setChecked(true);
             yaCha50_50_CB.setChecked(false);
 
-        }else if (sharedUintSet.getInt("压差量程",0) == 2){
+        }else if (modbusSlave.yaChaLiangCheng == 2){
 
             yaCha0_50_CB.setChecked(false);
             yaCha0_100_CB.setChecked(false);
@@ -74,11 +80,11 @@ public class UintSet extends Activity {
         }
 
         //协议类型：0，1分别对用内部协议，外部协议
-        if (sharedUintSet.getInt("协议类型",0) == 0){
+        if (modbusSlave.xieYiLeiXing == 0){
 
             neiBuXieYi_CB.setChecked(true);
             waiBuXieYi_CB.setChecked(false);
-        }else if (sharedUintSet.getInt("协议类型",0) == 1){
+        }else if (modbusSlave.xieYiLeiXing == 1){
 
             neiBuXieYi_CB.setChecked(false);
             waiBuXieYi_CB.setChecked(true);
@@ -86,19 +92,25 @@ public class UintSet extends Activity {
         }
 
         //按键模式：0，1 分别对应脉冲模式，电平模式
-        if (sharedUintSet.getInt("按键模式",0) == 0){
+        if (SpUtils.getInt(this,"按键模式",0) == 0){
 
             maiChong_CB.setChecked(true);
             dianPing_CB.setChecked(false);
-        }else if (sharedUintSet.getInt("按键模式",0) == 1){
+        }else if (SpUtils.getInt(this,"按键模式",0) == 1){
 
             maiChong_CB.setChecked(false);
             dianPing_CB.setChecked(true);
         }
 
+        if (SpUtils.getInt(this,"供水方式",0) == 0){
+            liangGuanZhi_CB.setChecked(true);
+            siGuanZhi_CB.setChecked(false);
+        }else {
+            liangGuanZhi_CB.setChecked(false);
+            siGuanZhi_CB.setChecked(true);
+        }
 
-        slaveAdd_ET.setText(sharedUintSet.getInt("从机地址", 1)+"");
-
+        slaveAdd_ET.setText(modbusSlave.slaveAdd+"");
 
         yaCha0_50_CB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -109,8 +121,8 @@ public class UintSet extends Activity {
                     yaCha50_50_CB.setChecked(false);
 
                 }
-                editor.putInt("压差量程",0);
-                editor.apply();
+                modbusSlave.yaChaLiangCheng = 0;
+                SpUtils.putInt(getApplicationContext(),"压差量程",0);
             }
         });
 
@@ -122,8 +134,8 @@ public class UintSet extends Activity {
                     yaCha0_50_CB.setChecked(false);
                     yaCha50_50_CB.setChecked(false);
                 }
-                editor.putInt("压差量程",1);
-                editor.apply();
+                modbusSlave.yaChaLiangCheng = 1;
+                SpUtils.putInt(getApplicationContext(),"压差量程",1);
             }
         });
 
@@ -136,8 +148,8 @@ public class UintSet extends Activity {
                     yaCha0_100_CB.setChecked(false);
 
                 }
-                editor.putInt("压差量程",2);
-                editor.apply();
+                modbusSlave.yaChaLiangCheng = 2;
+                SpUtils.putInt(getApplicationContext(),"压差量程",2);
             }
         });
 
@@ -147,8 +159,8 @@ public class UintSet extends Activity {
                 if (isChecked){
                     waiBuXieYi_CB.setChecked(false);
                 }
-                editor.putInt("协议类型",0);
-                editor.apply();
+                modbusSlave.xieYiLeiXing = 0;
+                SpUtils.putInt(getApplicationContext(),"协议类型",0);
             }
         });
 
@@ -159,8 +171,8 @@ public class UintSet extends Activity {
                 if (isChecked){
                     neiBuXieYi_CB.setChecked(false);
                 }
-                editor.putInt("协议类型",1);
-                editor.apply();
+                modbusSlave.xieYiLeiXing = 1;
+                SpUtils.putInt(getApplicationContext(),"协议类型",1);
             }
         });
 
@@ -170,28 +182,50 @@ public class UintSet extends Activity {
                 if (isChecked){
                     dianPing_CB.setChecked(false);
                 }
-                editor.putInt("按键模式",0);
-                editor.apply();
+                SpUtils.putInt(getApplicationContext(),"按键模式",0);
             }
         });
 
         dianPing_CB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if (isChecked){
                     maiChong_CB.setChecked(false);
                 }
-                editor.putInt("按键模式",1);
-                editor.apply();
+                SpUtils.putInt(getApplicationContext(),"按键模式",1);
             }
         });
 
         slaveAdd_ET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                editor.putInt("从机地址", Integer.parseInt(slaveAdd_ET.getText().toString()));
-                editor.apply();
+
+                modbusSlave.slaveAdd = Integer.parseInt(slaveAdd_ET.getText().toString());
+                SpUtils.putInt(getApplicationContext(),"从机地址",modbusSlave.slaveAdd);
                 return false;
+            }
+        });
+
+
+        liangGuanZhi_CB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+                    siGuanZhi_CB.setChecked(false);
+                    SpUtils.putInt(getApplicationContext(),"供水方式",0);
+                }
+            }
+        });
+
+        siGuanZhi_CB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    liangGuanZhi_CB.setChecked(false);
+                    SpUtils.putInt(getApplicationContext(),"供水方式",1);
+                }
             }
         });
     }

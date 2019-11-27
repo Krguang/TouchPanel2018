@@ -15,58 +15,58 @@ public class Modbus_Slav1 extends Thread {
     private ArrayList<Byte> rxTemp = new ArrayList<Byte>();
     private Timer timer10ms=new Timer();
 
-    private short backMusic;
-    private short BackMusic_upDown;
+    public int backMusic;
+    public int BackMusic_upDown;
 
-    private byte yangQiChaoYa;
-    private byte yangQIQianYa;
+    public int yangQiChaoYa;
+    public int yangQIQianYa;
 
-    private byte yaSuoKongQiChaoYa;
-    private byte yaSuoKongQiQianYa;
+    public int yaSuoKongQiChaoYa;
+    public int yaSuoKongQiQianYa;
 
-    private byte xiaoQiChaoYa;
-    private byte xiaoQiQianYa;
+    public int xiaoQiChaoYa;
+    public int xiaoQiQianYa;
 
-    private byte erYangHuaTanChaoYa;
-    private byte erYangHuaTanQianYa;
+    public int erYangHuaTanChaoYa;
+    public int erYangHuaTanQianYa;
 
-    private byte fuYaXiYinChaoYa;
-    private byte fuYaXiYinQianYa;
+    public int fuYaXiYinChaoYa;
+    public int fuYaXiYinQianYa;
 
-    private byte yaQiChaoYa;
-    private byte yaQiQianYa;
+    public int yaQiChaoYa;
+    public int yaQiQianYa;
 
-    private byte danQiChaoYa;
-    private byte danQiQianYa;
+    public int danQiChaoYa;
+    public int danQiQianYa;
 
-    private short Lightling_1 = 1;
+    public int Lightling_1 = 1;
 
-    private short Lightling_2 = 1;
+    public int Lightling_2 = 1;
 
     /***
      * 无影灯
      */
-    private short Shadowless_Lamp = 1;
+    public int Shadowless_Lamp = 1;
     /***
      * 术中灯
      */
-    private short Intraoperative_Lamp = 1;
+    public int Intraoperative_Lamp = 1;
     /***
      * 观片灯
      */
-    private short OfLightThe_Lamp = 1;
+    public int OfLightThe_Lamp = 1;
     /***
      * 备用
      */
-    private short Prepare = 1;
+    public int Prepare = 1;
     /***
      * 消音
      */
-    private short Erasure = 1;
+    public int Erasure = 1;
 
     private int[] regHodingBuf = new int[1024];
 
-    private int gasStatus;
+    public int gasStatus;
 
     private OutputStream mOutputStream = null;
     private InputStream mInputStream = null;
@@ -345,154 +345,4 @@ public class Modbus_Slav1 extends Thread {
         }
         regHodingBuf[1] = (Prepare) | (Intraoperative_Lamp << 1) | (Lightling_2 << 2) | (OfLightThe_Lamp << 3) | (Shadowless_Lamp << 4) | (Lightling_1 << 5) | (Erasure << 6);
     }
-
-
-    public short getBackMusic() {
-        return backMusic;
-    }
-
-
-    public void setBackMusic(short backMusic) {
-        this.backMusic = backMusic;
-    }
-
-
-    public short getBackMusic_upDown() {
-        return BackMusic_upDown;
-    }
-
-
-    public void setBackMusic_upDown(short backMusic_upDown) {
-        BackMusic_upDown = backMusic_upDown;
-    }
-
-    public byte getYangQiChaoYaValue(){
-        return yangQiChaoYa;
-    }
-
-    public byte getyangQiQianYa(){
-        return yangQIQianYa;
-    }
-
-    public byte getYaSuoKongQiChaoYa(){
-        return yaSuoKongQiChaoYa;
-    }
-
-    public byte getYaSUoKongQiQianYa(){
-        return yaSuoKongQiQianYa;
-    }
-
-    public byte getXiaoQiChaoYa(){
-        return xiaoQiChaoYa;
-    }
-
-    public byte getXiaoQiQianYa(){
-        return xiaoQiQianYa;
-    }
-
-    public byte getErYangHuaYanChaoYa(){
-        return erYangHuaTanChaoYa;
-    }
-
-    public byte getErYangHuaTanQianYa(){
-        return erYangHuaTanQianYa;
-    }
-
-    public byte getFuYaXiYinChaoYa(){
-        return fuYaXiYinChaoYa;
-    }
-
-    public byte getFuYaXiYinQianYa(){
-        return fuYaXiYinQianYa;
-    }
-
-    public byte getYaQiChaoYa(){
-        return yaQiChaoYa;
-    }
-
-    public byte getYaQiQianYa(){
-        return yaQiQianYa;
-    }
-
-    public byte getDanQiChaoYa(){
-        return danQiChaoYa;
-    }
-
-    public byte getDanQiQianYa(){
-        return danQiQianYa;
-    }
-
-    public short getLightling_1() {
-        return Lightling_1;
-    }
-
-
-    public void setLightling_1(short lightling_1) {
-        Lightling_1 = lightling_1;
-    }
-
-
-    public short getLightling_2() {
-        return Lightling_2;
-    }
-
-
-    public void setLightling_2(short lightling_2) {
-        Lightling_2 = lightling_2;
-    }
-
-
-    public short getShadowless_Lamp() {
-        return Shadowless_Lamp;
-    }
-
-
-    public void setShadowless_Lamp(short shadowless_Lamp) {
-        Shadowless_Lamp = shadowless_Lamp;
-    }
-
-
-    public short getIntraoperative_Lamp() {
-        return Intraoperative_Lamp;
-    }
-
-
-    public void setIntraoperative_Lamp(short intraoperative_Lamp) {
-        Intraoperative_Lamp = intraoperative_Lamp;
-    }
-
-
-    public short getOfLightThe_Lamp() {
-        return OfLightThe_Lamp;
-    }
-
-
-    public void setOfLightThe_Lamp(short ofLightThe_Lamp) {
-        OfLightThe_Lamp = ofLightThe_Lamp;
-    }
-
-
-    public short getPrepare() {
-        return Prepare;
-    }
-
-
-    public void setPrepare(short prepare) {
-        Prepare = prepare;
-    }
-
-
-    public short getErasure() {
-        return Erasure;
-    }
-
-
-    public void setErasure(short erasure) {
-        Erasure = erasure;
-    }
-
-    public int getGasStatus(){
-        return gasStatus;
-    }
-
 }

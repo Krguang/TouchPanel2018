@@ -8,12 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import android_serialport_api.Modbus_Slav;
+import utils.SpUtils;
 
 
 public class UnitMonitoringDataActivity extends Activity {
@@ -30,7 +29,6 @@ public class UnitMonitoringDataActivity extends Activity {
     Button bt_paifeng;
     Button bt_fengji;
     Button bt_zhiban;
-    Button bt_dianjiare;
     Button bt_fengjilun;
     Button bt_dianjiareone;
     Button bt_dianjiaretwo;
@@ -63,6 +61,7 @@ public class UnitMonitoringDataActivity extends Activity {
     private int paifengJi_temp = 0;
 
     Intent intent = new Intent();
+    Timer unit_time = new Timer();
     SharedPreferences sharedPreferences;
 
     private double huiFengWenDuDouble;
@@ -70,23 +69,26 @@ public class UnitMonitoringDataActivity extends Activity {
     private double sheDingWenDuDouble;
     private double sheDingShiDuDouble;
 
+
     private double humiDouble;
     private double coldWaterDouble;
     private double hotWaterDouble;
 
+    private TextView tv_panGuan;
+    private TextView tv_dianJiaRe;
+    private TextView tv_zaiReDuan;
+    private TextView tv_lengShuiFaKaiDu;
+    private TextView tv_reShuiFaKaiDu;
+    private TextView tv_dianJiaReGaowen;
 
-    Timer timer1 = new Timer();
-    TimerTask task1;
+    private Button bt_reShuiFa;
+    private Button bt_dianJiaRe;
+
     Modbus_Slav modbusSlave;
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.unit_monitoringdata);
-
-
-        modbusSlave = Modbus_Slav.getInstance();
-
 
         bt_bendiControl = (Button) findViewById(R.id.bt_bendicontrol_id);
         bt_chuXiaoWaring = (Button) findViewById(R.id.bt_chuxaiowaring_id);
@@ -101,7 +103,6 @@ public class UnitMonitoringDataActivity extends Activity {
         bt_paifeng = (Button) findViewById(R.id.bt_paifeng_id);
         bt_fengji = (Button) findViewById(R.id.bt_fengji_id);
         bt_zhiban = (Button) findViewById(R.id.bt_zhiban_id);
-        bt_dianjiare = (Button) findViewById(R.id.bt_dianjiare_id);
         tv_coldWateropening = (TextView) findViewById(R.id.tv_wateropening_id);
         tv_hotWateropening = (TextView) findViewById(R.id.tv_hotWaterOpening_id);
         tv_humidifieOpening = (TextView) findViewById(R.id.tv_HumidifieOpening_id);
@@ -129,492 +130,458 @@ public class UnitMonitoringDataActivity extends Activity {
         bt_jinfengflow11 = (Button) findViewById(R.id.bt_jinfengflow11_id);
         bt_jinfengflow12 = (Button) findViewById(R.id.bt_jinfengflow12_id);
         bt_paiFengJiLun = findViewById(R.id.paiFengJi);
-        sharedPreferences = getSharedPreferences("ljq", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+
+
+        tv_panGuan = findViewById(R.id.tv_lengPanGuan_id);
+        tv_dianJiaRe = findViewById(R.id.tv_dianJiaRe_id);
+        tv_zaiReDuan = findViewById(R.id.tv_zaiReDuan_id);
+        tv_lengShuiFaKaiDu = findViewById(R.id.tv_lengSHuiFaKaiDu_id);
+        tv_reShuiFaKaiDu = findViewById(R.id.tv_reShuiFaKaiDu_id);
+        tv_dianJiaReGaowen = findViewById(R.id.tv_dianJiaReGaoWen_id);
+
+        bt_reShuiFa = findViewById(R.id.pic_reShuiFa_id);
+        bt_dianJiaRe = findViewById(R.id.pic_DianJiaRe_id);
+        modbusSlave = Modbus_Slav.getInstance();
+
+        unit_time.schedule(unitTime, 100, 100);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    //    Modbus_Slav.stop_UnitActivity = true;
-        if (timer1!=null){
-            if (task1!=null){
-                task1.cancel();
-            }
-        }
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-  //      Modbus_Slav.stop_UnitActivity = false;
+    TimerTask unitTime = new TimerTask() {
 
-        if (timer1!=null){
-            if (task1!=null){
-                task1.cancel();
-            }
-        }
-        task1=new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {      // UI thread
+        public void run() {
+            runOnUiThread(new Runnable() {      // UI thread
 
-                    public void run() {
+                public void run() {
 
-//                        short huiFengWenDu = (short) sharedPreferences.getInt("回风温度",0);
-//                        short huiFengShiDu = (short) sharedPreferences.getInt("回风湿度",0);
-//                        short sheDingWenDu = (short) sharedPreferences.getInt("设定温度",0);
-//                        short sheDingShiDu = (short) sharedPreferences.getInt("设定湿度",0);
-//
-//                        short ColdWaterValveOpening = (short) sharedPreferences.getInt("冷水阀", 0);
-//                        short HotWaterValveOpening = (short) sharedPreferences.getInt("热水阀", 0);
-//                        short HumidifieOpening = (short) sharedPreferences.getInt("加湿器", 0);
+                    int gongSHuiFangShi = SpUtils.getInt(getApplicationContext(),"供水方式",0);
 
+                    huiFengWenDuDouble = modbusSlave.wenDu / 10.0;
+                    huiFengShiDuDoubLe = modbusSlave.shiDu /10.0;
+                    sheDingWenDuDouble = modbusSlave.wenDuSet / 10.0;
+                    sheDingShiDuDouble = modbusSlave.shiDuSet /10.0;
 
-                        huiFengWenDuDouble = modbusSlave.wenDu / 10.0;
-                        huiFengShiDuDoubLe = modbusSlave.shiDu /10.0;
-                        sheDingWenDuDouble = modbusSlave.wenDuSet / 10.0;
-                        sheDingShiDuDouble = modbusSlave.shiDuSet /10.0;
+                    humiDouble = modbusSlave.HumidifieOpening/10.0;
+                    coldWaterDouble = modbusSlave.ColdWaterValveOpening/10.0;
+                    hotWaterDouble = modbusSlave.HotWaterValveOpening/10.0;
 
-                        humiDouble = modbusSlave.HumidifieOpening/10.0;
-                        coldWaterDouble = modbusSlave.ColdWaterValveOpening/10.0;
-                        hotWaterDouble = modbusSlave.HotWaterValveOpening/10.0;
+                    String wenDuString = String.format(Locale.US,"%.1f",huiFengWenDuDouble);
+                    String shiDuString = String.format(Locale.US,"%.1f",huiFengShiDuDoubLe);
+                    String wenDuSetString = String.format(Locale.US,"%.1f",sheDingWenDuDouble);
+                    String shiDuSetString = String.format(Locale.US,"%.1f",sheDingShiDuDouble);
 
+                    String humiString = String.format(Locale.US,"%.1f",humiDouble);
+                    String coldWaterString = String.format(Locale.US,"%.1f",coldWaterDouble);
+                    String hotWaterString = String.format(Locale.US,"%.1f",hotWaterDouble);
 
-                        short UpperComputerHandAutomaticallyMonitoringPoint = (short) sharedPreferences.getInt("上位机手自动监控点", 0);
-                        short UpperComputerFengjiZHuangTaiMonitoringPoint = (short) sharedPreferences.getInt("上位机风机状态监控点", 0);
-                        short upperComputerZhongXiaoMonitoringPoint = (short) sharedPreferences.getInt("上位机盘管低温监控点", 0);
+                    tv_huiFengWenDu.setText("回风温度："+wenDuString+"℃");
+                    tv_huiFengShiDu.setText("回风湿度："+shiDuString+"RH");
+                    tv_sheDingWenDu.setText("设定温度："+wenDuSetString+"℃");
+                    tv_sheDingShiDu.setText("设定湿度："+shiDuSetString+"RH");
 
-                        short UpperComputerChuXiaoMonitoringPoint = (short) sharedPreferences.getInt("上位机中效报警监控点", 0);
-                        short UpperComputerElectricWarmOneMonitoringPoint = (short) sharedPreferences.getInt("上位机电加热1监控点", 0);
-                        short UpperComputerElectricWarmTwoMonitoringPoint = (short) sharedPreferences.getInt("上位机电加热2监控点", 0);
-                        short UpperComputerElectricWarmThreeMonitoringPoint = (short) sharedPreferences.getInt("上位机电加热3监控点", 0);
-                        short UpperComputerElectricWarmHighTemperatureMonitoringPoint = (short) sharedPreferences.getInt("上位机电加热高温监控点", 0);
-                        short UpperComputerFengJiQueFengMonitoringPoint = (short) sharedPreferences.getInt("上位机风机缺风监控点", 0);
-                        short UpperComputerSterilizationMonitoringPoint = (short) sharedPreferences.getInt("上位机灭菌监控点", 0);
-                        short UpperComputerFengJiStartMonitoringPoint = (short) sharedPreferences.getInt("上位机风机已启动监控点", 0);
-                        short UpperComputerPaiFengJiStartMonitoringPoint = (short) sharedPreferences.getInt("上位机排风机已启动监控点", 0);
-                        short UpperComputerZhiBanStartMonitoringPoint = (short) sharedPreferences.getInt("上位机值班已启动监控点", 0);
+                    tv_humidifieOpening.setText(humiString+"%");
 
-                        short WinrerInSummer = (short) sharedPreferences.getInt("冬夏季", 0);
+                    if (gongSHuiFangShi ==0){   //两管制
 
+                        tv_panGuan.setText("盘管");
+                        tv_dianJiaRe.setText("电加热");
+                        tv_zaiReDuan.setText("再热段");
+                        tv_lengShuiFaKaiDu.setText("水阀开度");
+                        tv_reShuiFaKaiDu.setText("");
+                        tv_dianJiaReGaowen.setText("电加热高温报警");
 
-//                        huiFengWenDuDouble = Modbus_Slav.wenDu / 10.0;
-//                        huiFengShiDuDoubLe = Modbus_Slav.shiDu /10.0;
-//                        sheDingWenDuDouble = Modbus_Slav.wenDuSet / 10.0;
-//                        sheDingShiDuDouble = Modbus_Slav.shiDuSet /10.0;
-//
-//                        humiDouble = Modbus_Slav.HumidifieOpening/10.0;
-//                        coldWaterDouble = Modbus_Slav.ColdWaterValveOpening/10.0;
-//                        hotWaterDouble = Modbus_Slav.HotWaterValveOpening/10.0;
+                        if (modbusSlave.WinterInSummer == 1) {      //夏季 通冷水
 
-//                        huiFengWenDuDouble = huiFengWenDu / 10.0;
-//                        huiFengShiDuDoubLe = huiFengShiDu /10.0;
-//                        sheDingWenDuDouble = sheDingWenDu / 10.0;
-//                        sheDingShiDuDouble = sheDingShiDu /10.0;
-//
-//                        humiDouble = HumidifieOpening/10.0;
-//                        coldWaterDouble = ColdWaterValveOpening/10.0;
-//                        hotWaterDouble = HotWaterValveOpening/10.0;
+                            tv_coldWateropening.setText(coldWaterString +"%");
 
+                        }else {                         //冬季 通热水
 
-                        String wenDuString = String.format(Locale.US,"%.1f",huiFengWenDuDouble);
-                        String shiDuString = String.format(Locale.US,"%.1f",huiFengShiDuDoubLe);
-                        String wenDuSetString = String.format(Locale.US,"%.1f",sheDingWenDuDouble);
-                        String shiDuSetString = String.format(Locale.US,"%.1f",sheDingShiDuDouble);
-
-                        String humiString = String.format(Locale.US,"%.1f",humiDouble);
-                        String coldWaterString = String.format(Locale.US,"%.1f",coldWaterDouble);
-                        String hotWaterString = String.format(Locale.US,"%.1f",hotWaterDouble);
-
-
-                        tv_huiFengWenDu.setText("回风温度："+wenDuString+"℃");
-                        tv_huiFengShiDu.setText("回风湿度："+shiDuString+"RH");
-                        tv_sheDingWenDu.setText("设定温度："+wenDuSetString+"℃");
-                        tv_sheDingShiDu.setText("设定湿度："+shiDuSetString+"RH");
-
-                        tv_humidifieOpening.setText(humiString+"%");
-                        tv_coldWateropening.setText(coldWaterString+"%");
-                        tv_hotWateropening.setText(hotWaterString+"%");
-
-
-
-                        if (UpperComputerPaiFengJiStartMonitoringPoint == 1){
-
-                            if (paifengJi_temp == 0){
-                                paifengJi_temp = 1;
-                                bt_paiFengJiLun.setBackgroundResource(R.drawable.exhaust_air_1);
-                            }else {
-                                paifengJi_temp = 0;
-                                bt_paiFengJiLun.setBackgroundResource(R.drawable.exhaust_air_2);
-                            }
-
+                            tv_coldWateropening.setText(hotWaterString +"%");
                         }
 
-                        if (UpperComputerFengjiZHuangTaiMonitoringPoint==1) {
+                        tv_hotWateropening.setText("");
 
-                            flow_temp++;
-                            if (flow_temp > 36)
-                                flow_temp = 0;
-                            switch (flow_temp) {
-                                case 3: {
-
-                                    bt_jinfengflow1.setBackgroundResource(R.drawable.flow_2);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-                                case 6: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(R.drawable.flow_3);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 9: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(R.drawable.flow_2);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 12: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(R.drawable.flow_3);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 15: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(R.drawable.flow_3);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 18: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(R.drawable.flow_0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-
-                                case 21: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(R.drawable.flow_0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 24: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(R.drawable.flow_0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-
-                                case 27: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(R.drawable.flow_0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 30: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(R.drawable.flow_1);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-
-                                case 33: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(R.drawable.flow_1);
-                                    bt_jinfengflow12.setBackgroundResource(0);
-
-                                }
-                                break;
-                                case 36: {
-
-                                    bt_jinfengflow1.setBackgroundResource(0);
-                                    bt_jinfengflow2.setBackgroundResource(0);
-                                    bt_jinfengflow3.setBackgroundResource(0);
-                                    bt_jinfengflow4.setBackgroundResource(0);
-                                    bt_jinfengflow5.setBackgroundResource(0);
-                                    bt_jinfengflow6.setBackgroundResource(0);
-                                    bt_jinfengflow7.setBackgroundResource(0);
-                                    bt_jinfengflow8.setBackgroundResource(0);
-                                    bt_jinfengflow9.setBackgroundResource(0);
-                                    bt_jinfengflow10.setBackgroundResource(0);
-                                    bt_jinfengflow11.setBackgroundResource(0);
-                                    bt_jinfengflow12.setBackgroundResource(R.drawable.flow_2);
-
-                                }
-                                break;
-
-
-                                default:
-                                    break;
-                            }
-
-
-                            if (fengjilun_temp == 0) {
-                                fengjilun_temp = 1;
-                                bt_fengjilun.setBackgroundResource(R.drawable.fengshanlu2);
-                            } else {
-                                fengjilun_temp = 0;
-                                bt_fengjilun.setBackgroundResource(R.drawable.fengshanlu1);
-                            }
-
-                            bt_fengji.setBackgroundResource(R.drawable.running);
-                        }else {
-                            bt_fengji.setBackgroundResource(R.drawable.init_ing);
-                            bt_jinfengflow1.setBackgroundResource(0);
-                            bt_jinfengflow2.setBackgroundResource(0);
-                            bt_jinfengflow3.setBackgroundResource(0);
-                            bt_jinfengflow4.setBackgroundResource(0);
-                            bt_jinfengflow5.setBackgroundResource(0);
-                            bt_jinfengflow6.setBackgroundResource(0);
-                            bt_jinfengflow7.setBackgroundResource(0);
-                            bt_jinfengflow8.setBackgroundResource(0);
-                            bt_jinfengflow9.setBackgroundResource(0);
-                            bt_jinfengflow10.setBackgroundResource(0);
-                            bt_jinfengflow11.setBackgroundResource(0);
-                            bt_jinfengflow12.setBackgroundResource(0);
-                        }
-
-                        if (UpperComputerChuXiaoMonitoringPoint == 1) {
-                            bt_chuXiaoWaring.setBackgroundResource(R.drawable.waring);
-                        } else {
-                            bt_chuXiaoWaring.setBackgroundResource(R.drawable.init_ing);
-                        }
-
-
-                        if (UpperComputerFengJiQueFengMonitoringPoint == 1) {
-                            bt_fengjiquefengwaring.setBackgroundResource(R.drawable.waring);
-                        } else {
-                            bt_fengjiquefengwaring.setBackgroundResource(R.drawable.init_ing);
-                        }
-
-                        if (upperComputerZhongXiaoMonitoringPoint == 1) {
-                            bt_zhongxiaowaring.setBackgroundResource(R.drawable.waring);
-                        } else {
-                            bt_zhongxiaowaring.setBackgroundResource(R.drawable.init_ing);
-                        }
-
-
-                        if (UpperComputerElectricWarmOneMonitoringPoint == 1) {
+                        if (modbusSlave.ElectricWarmOneMonitoringPoint == 1) {
                             bt_dianjiareone.setBackgroundResource(R.drawable.running);
                         } else {
                             bt_dianjiareone.setBackgroundResource(R.drawable.init_ing);
                         }
 
-                        if (UpperComputerElectricWarmTwoMonitoringPoint == 1) {
+                        if (modbusSlave.ElectricWarmTwoMonitoringPoint == 1) {
                             bt_dianjiaretwo.setBackgroundResource(R.drawable.running);
                         } else {
                             bt_dianjiaretwo.setBackgroundResource(R.drawable.init_ing);
                         }
-                        if (UpperComputerElectricWarmThreeMonitoringPoint == 1) {
+                        if (modbusSlave.ElectricWarmThreeMonitoringPoint == 1) {
                             bt_dianjiarethree.setBackgroundResource(R.drawable.running);
                         } else {
                             bt_dianjiarethree.setBackgroundResource(R.drawable.init_ing);
                         }
 
-
-                        if (UpperComputerElectricWarmHighTemperatureMonitoringPoint == 0) {
+                        if (modbusSlave.ElectricWarmHighTemperatureMonitoringPoint == 0) {
                             bt_gaowenwaring.setBackgroundResource(R.drawable.waring);
                         } else {
                             bt_gaowenwaring.setBackgroundResource(R.drawable.init_ing);
                         }
 
+                        bt_dianJiaRe.setBackgroundResource(R.drawable.dianjiare);
+                        bt_reShuiFa.setBackgroundResource(R.drawable.touming);
 
-//                        String HumidifieOpeningbai = "0" + HumidifieOpening / 100;
-//                        String HumidifieOpeningshi = "0" + HumidifieOpening / 10 % 10;
-//                        String HumidifieOpeningge = "0" + HumidifieOpening % 10;
-//
-//                        tv_humidifieOpening.setText(HumidifieOpeningbai.substring(HumidifieOpeningbai.length() - 1, HumidifieOpeningbai.length()) + HumidifieOpeningshi.substring(HumidifieOpeningshi.length() - 1, HumidifieOpeningshi.length()) + "." + HumidifieOpeningge.substring(HumidifieOpeningge.length() - 1, HumidifieOpeningge.length()) + "%");
+                    }else {                     //四管制
 
-                        if (UpperComputerHandAutomaticallyMonitoringPoint == 1) {
-                            bt_bendicontrol.setBackgroundResource(R.drawable.init_ing);
-                            bt_yuanchengcontrol.setBackgroundResource(R.drawable.running);
-                        } else {
-                            bt_bendicontrol.setBackgroundResource(R.drawable.running);
-                            bt_yuanchengcontrol.setBackgroundResource(R.drawable.init_ing);
-                        }
+                        tv_panGuan.setText("冷盘管");
+                        tv_dianJiaRe.setText("");
+                        tv_zaiReDuan.setText("热盘管");
+                        tv_lengShuiFaKaiDu.setText("冷水阀开度");
+                        tv_reShuiFaKaiDu.setText("热水阀开度");
+                        tv_dianJiaReGaowen.setText("");
 
-//                        String bai = "0" + ColdWaterValveOpening / 100;
-//                        String shi = "0" + ColdWaterValveOpening / 10 % 10;
-//                        String ge = "0" + ColdWaterValveOpening % 10;
-//
-//                        tv_coldWateropening.setText(bai.substring(bai.length() - 1, bai.length()) + shi.substring(shi.length() - 1, shi.length()) + "." + ge.substring(ge.length() - 1, ge.length()) + "%");
-//
-//                        bai = "0" + HotWaterValveOpening / 100;
-//                        shi = "0" + HotWaterValveOpening / 10 % 10;
-//                        ge = "0" + HotWaterValveOpening % 10;
-//
-//                        tv_hotWateropening.setText(bai.substring(bai.length() - 1, bai.length()) + shi.substring(shi.length() - 1, shi.length()) + "." + ge.substring(ge.length() - 1, ge.length()) + "%");
+                        tv_coldWateropening.setText(coldWaterString+"%");
+                        tv_hotWateropening.setText(hotWaterString+"%");
+
+                        bt_dianJiaRe.setBackgroundResource(R.drawable.touming);
+                        bt_reShuiFa.setBackgroundResource(R.drawable.reshuifa);
+
+                        bt_dianjiareone.setBackgroundResource(R.drawable.touming);
+                        bt_dianjiaretwo.setBackgroundResource(R.drawable.touming);
+                        bt_dianjiarethree.setBackgroundResource(R.drawable.touming);
+                        bt_gaowenwaring.setBackgroundResource(R.drawable.touming);
+                    }
 
 
-                        if (WinrerInSummer == 1) {
+                    if (modbusSlave.PaiFengJiStartMonitoringPoint == 1){
 
-                            bt_coldwater.setBackgroundResource(R.drawable.running);
-                            bt_hotwater.setBackgroundResource(R.drawable.init_ing);
-
-
-                        } else {
-                            bt_coldwater.setBackgroundResource(R.drawable.init_ing);
-                            bt_hotwater.setBackgroundResource(R.drawable.running);
-
-                        }
-                        if (UpperComputerSterilizationMonitoringPoint == 1) {
-                            bt_xiaodu.setBackgroundResource(R.drawable.running);
-                        } else {
-                            bt_xiaodu.setBackgroundResource(R.drawable.init_ing);
-                        }
-                        if (UpperComputerPaiFengJiStartMonitoringPoint == 1) {
-                            bt_paifeng.setBackgroundResource(R.drawable.running);
-                        } else {
-                            bt_paifeng.setBackgroundResource(R.drawable.init_ing);
-                        }
-                        if (UpperComputerFengJiStartMonitoringPoint == 1) {
-                            bt_fengji.setBackgroundResource(R.drawable.running);
-
-                        } else {
-                            bt_fengji.setBackgroundResource(R.drawable.init_ing);
-                        }
-
-                        if (UpperComputerZhiBanStartMonitoringPoint == 1) {
-                            bt_zhiban.setBackgroundResource(R.drawable.running);
-                        } else {
-                            bt_zhiban.setBackgroundResource(R.drawable.init_ing);
+                        if (paifengJi_temp == 0){
+                            paifengJi_temp = 1;
+                            bt_paiFengJiLun.setBackgroundResource(R.drawable.exhaust_air_1);
+                        }else {
+                            paifengJi_temp = 0;
+                            bt_paiFengJiLun.setBackgroundResource(R.drawable.exhaust_air_2);
                         }
 
                     }
-                });
-            }
-        };
-        timer1.schedule(task1, 1000, 1000);
-    }
+
+                    if (modbusSlave.FengjiZHuangTaiMonitoringPoint==1) {
+
+                        flow_temp++;
+                        if (flow_temp > 36)
+                            flow_temp = 0;
+                        switch (flow_temp) {
+                            case 3: {
+
+                                bt_jinfengflow1.setBackgroundResource(R.drawable.flow_2);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+                            case 6: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(R.drawable.flow_3);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 9: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(R.drawable.flow_2);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 12: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(R.drawable.flow_3);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 15: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(R.drawable.flow_3);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 18: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(R.drawable.flow_0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+
+                            case 21: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(R.drawable.flow_0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 24: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(R.drawable.flow_0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+
+                            case 27: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(R.drawable.flow_0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 30: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(R.drawable.flow_1);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+
+                            case 33: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(R.drawable.flow_1);
+                                bt_jinfengflow12.setBackgroundResource(0);
+
+                            }
+                            break;
+                            case 36: {
+
+                                bt_jinfengflow1.setBackgroundResource(0);
+                                bt_jinfengflow2.setBackgroundResource(0);
+                                bt_jinfengflow3.setBackgroundResource(0);
+                                bt_jinfengflow4.setBackgroundResource(0);
+                                bt_jinfengflow5.setBackgroundResource(0);
+                                bt_jinfengflow6.setBackgroundResource(0);
+                                bt_jinfengflow7.setBackgroundResource(0);
+                                bt_jinfengflow8.setBackgroundResource(0);
+                                bt_jinfengflow9.setBackgroundResource(0);
+                                bt_jinfengflow10.setBackgroundResource(0);
+                                bt_jinfengflow11.setBackgroundResource(0);
+                                bt_jinfengflow12.setBackgroundResource(R.drawable.flow_2);
+
+                            }
+                            break;
+
+
+                            default:
+                                break;
+                        }
+
+
+                        if (fengjilun_temp == 0) {
+                            fengjilun_temp = 1;
+                            bt_fengjilun.setBackgroundResource(R.drawable.fengshanlu2);
+                        } else {
+                            fengjilun_temp = 0;
+                            bt_fengjilun.setBackgroundResource(R.drawable.fengshanlu1);
+                        }
+
+                        bt_fengji.setBackgroundResource(R.drawable.running);
+                    }else {
+                        bt_fengji.setBackgroundResource(R.drawable.init_ing);
+                        bt_jinfengflow1.setBackgroundResource(0);
+                        bt_jinfengflow2.setBackgroundResource(0);
+                        bt_jinfengflow3.setBackgroundResource(0);
+                        bt_jinfengflow4.setBackgroundResource(0);
+                        bt_jinfengflow5.setBackgroundResource(0);
+                        bt_jinfengflow6.setBackgroundResource(0);
+                        bt_jinfengflow7.setBackgroundResource(0);
+                        bt_jinfengflow8.setBackgroundResource(0);
+                        bt_jinfengflow9.setBackgroundResource(0);
+                        bt_jinfengflow10.setBackgroundResource(0);
+                        bt_jinfengflow11.setBackgroundResource(0);
+                        bt_jinfengflow12.setBackgroundResource(0);
+                    }
+
+                    if (modbusSlave.ChuXiaoMonitoringPoint == 1) {
+                        bt_chuXiaoWaring.setBackgroundResource(R.drawable.waring);
+                    } else {
+                        bt_chuXiaoWaring.setBackgroundResource(R.drawable.init_ing);
+                    }
+
+
+                    if (modbusSlave.FengJiQueFengMonitoringPoint == 1) {
+                        bt_fengjiquefengwaring.setBackgroundResource(R.drawable.waring);
+                    } else {
+                        bt_fengjiquefengwaring.setBackgroundResource(R.drawable.init_ing);
+                    }
+
+                    if (modbusSlave.ZhongXiaoMonitoringPoint == 1) {
+                        bt_zhongxiaowaring.setBackgroundResource(R.drawable.waring);
+                    } else {
+                        bt_zhongxiaowaring.setBackgroundResource(R.drawable.init_ing);
+                    }
+
+                    if (modbusSlave.HandAutomaticallyMonitoringPoint == 1) {
+                        bt_bendicontrol.setBackgroundResource(R.drawable.init_ing);
+                        bt_yuanchengcontrol.setBackgroundResource(R.drawable.running);
+                    } else {
+                        bt_bendicontrol.setBackgroundResource(R.drawable.running);
+                        bt_yuanchengcontrol.setBackgroundResource(R.drawable.init_ing);
+                    }
+
+
+
+                    if (modbusSlave.WinterInSummer == 1) {
+
+                        bt_coldwater.setBackgroundResource(R.drawable.running);
+                        bt_hotwater.setBackgroundResource(R.drawable.init_ing);
+
+
+                    } else {
+                        bt_coldwater.setBackgroundResource(R.drawable.init_ing);
+                        bt_hotwater.setBackgroundResource(R.drawable.running);
+
+                    }
+                    if (modbusSlave.SterilizationMonitoringPoint == 1) {
+                        bt_xiaodu.setBackgroundResource(R.drawable.running);
+                    } else {
+                        bt_xiaodu.setBackgroundResource(R.drawable.init_ing);
+                    }
+                    if (modbusSlave.PaiFengJiStartMonitoringPoint == 1) {
+                        bt_paifeng.setBackgroundResource(R.drawable.running);
+                    } else {
+                        bt_paifeng.setBackgroundResource(R.drawable.init_ing);
+                    }
+                    if (modbusSlave.FengJiStartMonitoringPoint == 1) {
+                        bt_fengji.setBackgroundResource(R.drawable.running);
+
+                    } else {
+                        bt_fengji.setBackgroundResource(R.drawable.init_ing);
+                    }
+
+                    if (modbusSlave.ZhiBanStartMonitoringPoint == 1) {
+                        bt_zhiban.setBackgroundResource(R.drawable.running);
+                    } else {
+                        bt_zhiban.setBackgroundResource(R.drawable.init_ing);
+                    }
+                }
+            });
+
+        }
+    };
+
 
     public void loginback(View v) {
         finish();
@@ -622,7 +589,7 @@ public class UnitMonitoringDataActivity extends Activity {
 
     public void ButUintSet(View view) {
 
-        intent.setClass(this, UintSet.class);
+        intent.setClass(this,UintSet.class);
         startActivity(intent);
 
     }

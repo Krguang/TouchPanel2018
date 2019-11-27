@@ -1,4 +1,5 @@
 package android_serialport_api;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,78 +18,68 @@ import java.util.TimerTask;
  */
 public class Modbus_Slav extends Thread {
 
+    private OutputStream mOutputStream;
+    private InputStream mInputStream;
+
+
     private ArrayList<Byte> rxTemp = new ArrayList<Byte>();
     private Timer timer10ms=new Timer();
+
+    private final String uartPath = "/dev/ttyS2";
 
     private int[] regHodingBuf = new int[1024];
 
     public boolean allowWriteShiDuSet = true;
     public boolean allowWriteWenDuSet = true;
 
-    private OutputStream mOutputStream = null;
-    private InputStream mInputStream = null;
+    public int slaveAdd = 1;
+    public int yaChaLiangCheng; //压差量程 0，1，2 分别对应 0-50Pa,0-100Pa,-50-+50Pa;
+    public int xieYiLeiXing;    //协议类型：0，1分别对用内部协议，外部协议
 
-    public int SLAV_addr = 1;
-    public int yaChaLiangCheng;     //压差量程 0，1，2 分别对应 0-50Pa,0-100Pa,-50-+50Pa;
-    public int xieYiLeiXing;        //协议类型：0，1分别对用内部协议，外部协议
-
-    private int jiZuStartStop = 0;
-    private int zhiBanStartStop = 0;
-    private int fuYaStartStop = 0;
     public int wenDuSet = 230;
     public int shiDuSet = 500;
-    public int yaChaSet = 500;
     public int wenDu = 230;
     public int shiDu = 500;
-    public int yaCha = 500;
-    private int fengJiZhuangTai = 0;
-    private int zhiBanZhuangTai = 0;
-    private int fuYaZhuangtai = 0;
-    private int fengJiGuZhang = 0;
-    private int GaoXiao;
 
-    public int ColdWaterValveOpening = 0;//冷水阀
-    public int HotWaterValveOpening = 0;//热水阀
-    public int HumidifieOpening = 0;   //加湿器
-    public int TheAirTemperature = 0;//新风温度
+    public int ColdWaterValveOpening;
+    public int HotWaterValveOpening;
+    public int HumidifieOpening;
 
-    private int upperComputerHeartBeatMonitoringPoint = 0;       //上位机心跳监控点
-    private int upperComputerHandAutomaticallyMonitoringPoint = 0;//上位机手自动监控点
-    private int upperComputerFengjiZHuangTaiMonitoringPoint;//上位机风机状态监控点
-    private int upperComputerZhongXiaoMonitoringPoint;//上位机盘管低温监控点
-    private int upperComputerGaoXiaoMonitoringPoint;//上位机高效报警监控点
-    private int upperComputerChuXiaoMonitoringPoint;//上位机中效报警监控点
-    private int upperComputerElectricWarmOneMonitoringPoint;//上位机电加热1监控点
-    private int upperComputerElectricWarmTwoMonitoringPoint;//上位机电加热2监控点
-    private int upperComputerElectricWarmThreeMonitoringPoint;//上位机电加热3监控点
-    private int upperComputerElectricWarmHighTemperatureMonitoringPoint;//上位机电加热高温监控点
-    private int upperComputerFengJiQueFengMonitoringPoint;//上位机风机缺风监控点
-    private int upperComputerSterilizationMonitoringPoint;//上位机灭菌监控点
-    private int upperComputerFengJiStartMonitoringPoint;//上位机风机已启动监控点
-    private int upperComputerPaiFengJiStartMonitoringPoint;//上位机排风机已启动监控点
-    private int upperComputerZhiBanStartMonitoringPoint;//上位机值班已启动监控点
-    private int upperComputerFuYaStartMonitoringPoint;//上位机负压启动监控点
-    private int upperComputerElectricPreheatOneMonitoringPoint;//上位机电预热1监控点
-    private int upperComputerElectricPreheatTwoMonitoringPoint;//上位机电预热2监控点
-    private int upperComputerElectricPreheatThreeMonitoringPoint;//上位机电预热3监控点
-    private int upperComputerElectricPreheatHighTemperatureMonitoringPoint;//上位机电预热高温监控点
-    private int upperComputerCompressorOneStartMonitoringPoint;//上位机压缩机1运行监控点
-    private int upperComputerCompressorTwoStartMonitoringPoint;//上位机压缩机2运行监控点
-    private int upperComputerCompressorThreeStartMonitoringPoint;//上位机压缩机3运行监控点
-    private int upperComputerCompressorFourStartMonitoringPoint;//上位机压缩机4运行监控点
-    private int upperComputerCompressorOneBreakdownMonitoringPoint;//上位机压缩机1故障监控点
-    private int upperComputerCompressorTwoBreakdownMonitoringPoint;//上位机压缩机2故障监控点
-    private int upperComputerCompressorThreeBreakdownMonitoringPoint;//上位机压缩机3故障监控点
-    private int upperComputerCompressorFourBreakdownMonitoringPoint;//上位机压缩机4故障监控点
-    private int WinterInSummer = 0;//冬夏季
+    public int jiZuStartStop;
+    public int zhiBanStartStop;
+    public int fuYaStartStop;
 
-   // Timer timer10ms=new Timer();
+    public int fengJiZhuangTai;
+    public int zhiBanZhuangTai;
+    public int fuYaZhuangtai;
+    public int fengJiGuZhang;
+    public int GaoXiao;
+
+    public int HeartBeatMonitoringPoint;       //上位机心跳监控点
+    public int HandAutomaticallyMonitoringPoint;//上位机手自动监控点
+    public int FengjiZHuangTaiMonitoringPoint;//上位机风机状态监控点
+    public int ZhongXiaoMonitoringPoint;//上位机中效监控点
+    public int GaoXiaoMonitoringPoint;//上位机高效报警监控点
+    public int ChuXiaoMonitoringPoint;//上位机初效报警监控点
+    public int ElectricWarmOneMonitoringPoint;//上位机电加热1监控点
+    public int ElectricWarmTwoMonitoringPoint;//上位机电加热2监控点
+    public int ElectricWarmThreeMonitoringPoint;//上位机电加热3监控点
+    public int ElectricWarmHighTemperatureMonitoringPoint;//上位机电加热高温监控点
+    public int FengJiQueFengMonitoringPoint;//上位机风机缺风监控点
+    public int SterilizationMonitoringPoint;//上位机灭菌监控点
+    public int FengJiStartMonitoringPoint;//上位机风机已启动监控点
+    public int PaiFengJiStartMonitoringPoint;//上位机排风机已启动监控点
+    public int ZhiBanStartMonitoringPoint;//上位机值班已启动监控点
+
+    public int WinterInSummer;//冬夏季
+
+    // Timer timer10ms=new Timer();
 
     private SerialPort mserialPort = null;
 
     private final static Modbus_Slav instance = new Modbus_Slav();
 
-    private Modbus_Slav() {
+    private Modbus_Slav(){
         try {
             try {
                 mserialPort = getSerialPort();
@@ -96,21 +87,24 @@ public class Modbus_Slav extends Thread {
 
                 e.printStackTrace();
             }
-        } catch (InvalidParameterException | SecurityException e) {
+        } catch (InvalidParameterException e) {
+
             e.printStackTrace();
+        } catch (SecurityException ignored) {
+
         }
         mInputStream = mserialPort.getInputStream();
         mOutputStream = mserialPort.getOutputStream();
+    }
+
+    public static Modbus_Slav getInstance(){
+        return instance;
     }
 
 
     public void closePort() throws IOException {
         mInputStream.close();
         mOutputStream.close();
-    }
-
-    public static Modbus_Slav getInstance(){
-        return instance;
     }
 
     /**
@@ -167,16 +161,17 @@ public class Modbus_Slav extends Thread {
 
                             byte[] rxTempByteArray = new byte[rxTemp.size()+255];
                             int i=0;
-                            for (Byte aRxTemp : rxTemp) {
+                            Iterator<Byte> iterator = rxTemp.iterator();
+                            while (iterator.hasNext()) {
 
-                                if (i < rxTemp.size() + 255) {
-                                    rxTempByteArray[i] = aRxTemp;
+                                if (i < rxTemp.size()+255){
+                                    rxTempByteArray[i] = iterator.next();
                                     i++;
                                 }
                             }
 
                             onDataReceived(rxTempByteArray,rxTemp.size());
-                          //  Log.d(TAG, "run: "+Arrays.toString(rxTempByteArray));
+                            //  Log.d(TAG, "run: "+Arrays.toString(rxTempByteArray));
                             rxTemp.clear();
 
                         }catch (Exception e){
@@ -198,17 +193,11 @@ public class Modbus_Slav extends Thread {
      * @throws IOException
      * @throws InvalidParameterException
      */
-    private SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
+    public SerialPort getSerialPort() throws SecurityException, IOException, InvalidParameterException {
         if (mserialPort == null) {
 
-            String path = "/dev/ttyS2";
             int baudrate = 19200;
-            if (path.length() == 0) {
-                throw new InvalidParameterException();
-            }
-
-            mserialPort = new SerialPort(new File(path), baudrate, 0);
-
+            mserialPort = new SerialPort(new File(uartPath), baudrate, 0);
         }
         return mserialPort;
     }
@@ -223,32 +212,32 @@ public class Modbus_Slav extends Thread {
 
     private void onDataReceived(byte[] reBuf, int size) {
 
-        if (!(SLAV_addr == reBuf[0])) {
+        if (!(slaveAdd == reBuf[0])) {
             return;
         }
 
-            if (size <= 3)
-                return;
-            if (CRC_16.checkBuf(reBuf)) {
-                switch (reBuf[1]) {
-                    case 0x03:
-                        mod_Fun_03_Slav(reBuf);
-                        break;
-                    //case 0x06:	    mod_Fun_06_Slav(reBuf,size);	break;
-                    case 0x10:
-                        mod_Fun_16_Slav(reBuf, size);
-                        break;
-                    default:
-                        break;
-                }
+        if (size <= 3)
+            return;
+        if (CRC_16.checkBuf(reBuf)) {
+            switch (reBuf[1]) {
+                case 0x03:
+                    mod_Fun_03_Slav(reBuf);
+                    break;
+                //case 0x06:	    mod_Fun_06_Slav(reBuf,size);	break;
+                case 0x10:
+                    mod_Fun_16_Slav(reBuf, size);
+                    break;
+                default:
+                    break;
             }
+        }
     }
 
     /***
      * 发送数据
      * @param seBuf
      */
-    private void onDataSend(byte[] seBuf, int size) {
+    public void onDataSend(byte[] seBuf, int size) {
         try {
             mOutputStream.write(seBuf, 0, size);
         } catch (IOException e) {
@@ -256,17 +245,6 @@ public class Modbus_Slav extends Thread {
             e.printStackTrace();
         }
     }
-
-    /***
-     * slave   功能码06
-     * @param reBuf
-     * @param size
-     */
-        /*private void mod_Fun_06_Slav(byte[] reBuf, int size) {
-
-
-		}
-		*/
 
     /***
      * slave   功能码16
@@ -295,7 +273,9 @@ public class Modbus_Slav extends Thread {
             regHodingBuf[addr + i] = val;
         }
 
-        System.arraycopy(reBuf, 0, seBuf, 0, 6);
+        for (int i = 0; i < 6; i++) {
+            seBuf[i] = reBuf[i];
+        }
 
         crc.update(seBuf, 6);
         int value = crc.getValue();
@@ -310,6 +290,8 @@ public class Modbus_Slav extends Thread {
      * slave   功能码16处理函数
      */
     private void slav_hand_10() {
+
+
 
         if (xieYiLeiXing == 0){         //内部协议
 
@@ -332,7 +314,6 @@ public class Modbus_Slav extends Thread {
             fuYaZhuangtai =     (regHodingBuf[7]>>2)&0x01;                      //上位机负压启动监控点
             fengJiGuZhang =     (regHodingBuf[7]>>3)&0x01;
             GaoXiao =           (regHodingBuf[7]>>4)&0x01;
-
         }
 
         if (allowWriteWenDuSet) {
@@ -342,46 +323,29 @@ public class Modbus_Slav extends Thread {
             shiDuSet =  regHodingBuf[6];
         }
 
-
         ColdWaterValveOpening =  regHodingBuf[13];//冷水阀开度
         HotWaterValveOpening = regHodingBuf[14];//热水阀开度
         HumidifieOpening =  regHodingBuf[15];  //加湿器开度1
-        TheAirTemperature = regHodingBuf[16]; //新风温度
 
-        upperComputerHeartBeatMonitoringPoint =  (regHodingBuf[17] & 0x0100) >> 8;                    //上位机心跳监控点
-        upperComputerHandAutomaticallyMonitoringPoint =  (regHodingBuf[17] & 0x0200) >> 9;            //上位机手自动监控点
-        upperComputerFengjiZHuangTaiMonitoringPoint =  (regHodingBuf[17] & 0x0400) >> 10;             //上位机风机状态监控点
-        upperComputerZhongXiaoMonitoringPoint =  (regHodingBuf[17] & 0x0800) >> 11;                     //上位机中效报警监控点
-        upperComputerGaoXiaoMonitoringPoint =  (regHodingBuf[17] & 0x1000) >> 12;                     //上位机高效报警监控点
-        upperComputerChuXiaoMonitoringPoint =  (regHodingBuf[17] & 0x2000) >> 13;                     //上位机初效报警监控点
-        upperComputerElectricWarmOneMonitoringPoint =  (regHodingBuf[17] & 0x4000) >> 14;             //上位机电加热1监控点
-        upperComputerElectricWarmTwoMonitoringPoint =  (regHodingBuf[17] & 0x8000) >> 15;             //上位机电加热2监控点
+        HeartBeatMonitoringPoint =  (regHodingBuf[17] & 0x0100) >> 8;                    //上位机心跳监控点
+        HandAutomaticallyMonitoringPoint =  (regHodingBuf[17] & 0x0200) >> 9;            //上位机手自动监控点
+        FengjiZHuangTaiMonitoringPoint =  (regHodingBuf[17] & 0x0400) >> 10;             //上位机风机状态监控点
+        ZhongXiaoMonitoringPoint =  (regHodingBuf[17] & 0x0800) >> 11;                     //上位机中效报警监控点
+        GaoXiaoMonitoringPoint =  (regHodingBuf[17] & 0x1000) >> 12;                     //上位机高效报警监控点
+        ChuXiaoMonitoringPoint =  (regHodingBuf[17] & 0x2000) >> 13;                     //上位机初效报警监控点
+        ElectricWarmOneMonitoringPoint =  (regHodingBuf[17] & 0x4000) >> 14;             //上位机电加热1监控点
+        ElectricWarmTwoMonitoringPoint =  (regHodingBuf[17] & 0x8000) >> 15;             //上位机电加热2监控点
 
-        upperComputerElectricWarmThreeMonitoringPoint =  (regHodingBuf[17] & 0x01);                     //上位机电加热3监控点
-        upperComputerElectricWarmHighTemperatureMonitoringPoint =  (regHodingBuf[17] & 0x02) >> 1;    //上位机电加热高温监控点
-        upperComputerFengJiQueFengMonitoringPoint =  (regHodingBuf[17] & 0x04) >> 2;                  //上位机风机缺风监控点
-        upperComputerSterilizationMonitoringPoint =  (regHodingBuf[17] & 0x08) >> 3;                  //上位机灭菌监控点
-        upperComputerFengJiStartMonitoringPoint =  (regHodingBuf[17] & 0x10) >> 4;                    //上位机风机已启动监控点
-        upperComputerPaiFengJiStartMonitoringPoint = (regHodingBuf[17] & 0x20) >> 5;                 //上位机排风机已启动监控点
-        upperComputerZhiBanStartMonitoringPoint = (regHodingBuf[17] & 0x40) >> 6;                    //上位机值班已启动监控点
-      //  upperComputerFuYaStartMonitoringPoint = (regHodingBuf[17] & 0x80) >> 7;                      //上位机负压启动监控点  与 fuYaZhuangtai重复
-/*
-        upperComputerElectricPreheatOneMonitoringPoint = (int) ((regHodingBuf[18] & 0x10) >> 4);             //上位机电预热1监控点
-        upperComputerElectricPreheatTwoMonitoringPoint = (int) ((regHodingBuf[18] & 0x20) >> 5);             //上位机电预热2监控点
-        upperComputerElectricPreheatThreeMonitoringPoint = (int) ((regHodingBuf[18] & 0x40) >> 6);           //上位机电预热3监控点
-        upperComputerElectricPreheatHighTemperatureMonitoringPoint = (int) ((regHodingBuf[18] & 0x80) >> 7); //上位机电预热高温监控点
-        upperComputerCompressorOneStartMonitoringPoint = (int) ((regHodingBuf[18] & 0x0100) >> 8);           //上位机压缩机1运行监控点
-        upperComputerCompressorTwoStartMonitoringPoint = (int) ((regHodingBuf[18] & 0x0200) >> 9);           //上位机压缩机2运行监控点
-        upperComputerCompressorThreeStartMonitoringPoint = (int) ((regHodingBuf[18] & 0x0400) >> 10);        //上位机压缩机3运行监控点
-        upperComputerCompressorFourStartMonitoringPoint = (int) ((regHodingBuf[18] & 0x0800) >> 11);         //上位机压缩机4运行监控点
-        upperComputerCompressorOneBreakdownMonitoringPoint = (int) (regHodingBuf[18] & 0x01);                //上位机压缩机1故障监控点
-        upperComputerCompressorTwoBreakdownMonitoringPoint = (int) ((regHodingBuf[18] & 0x02) >> 1);         //上位机压缩机2故障监控点
-        upperComputerCompressorThreeBreakdownMonitoringPoint = (int) ((regHodingBuf[18] & 0x04) >> 2);       //上位机压缩机3故障监控点
-        upperComputerCompressorFourBreakdownMonitoringPoint = (int) ((regHodingBuf[18] & 0x08) >> 3);        //上位机压缩机4故障监控点
-        WinterInSummer = (int) ((regHodingBuf[20] & 0x04) >> 2);                                             //冬夏季监控控制点偏移2
-    */
+        ElectricWarmThreeMonitoringPoint =  (regHodingBuf[17] & 0x01);                     //上位机电加热3监控点
+        ElectricWarmHighTemperatureMonitoringPoint =  (regHodingBuf[17] & 0x02) >> 1;    //上位机电加热高温监控点
+        FengJiQueFengMonitoringPoint =  (regHodingBuf[17] & 0x04) >> 2;                  //上位机风机缺风监控点
+        SterilizationMonitoringPoint =  (regHodingBuf[17] & 0x08) >> 3;                  //上位机灭菌监控点
+        FengJiStartMonitoringPoint =  (regHodingBuf[17] & 0x10) >> 4;                    //上位机风机已启动监控点
+        PaiFengJiStartMonitoringPoint = (regHodingBuf[17] & 0x20) >> 5;                 //上位机排风机已启动监控点
+        ZhiBanStartMonitoringPoint = (regHodingBuf[17] & 0x40) >> 6;                    //上位机值班已启动监控点
+
         WinterInSummer = (regHodingBuf[20] & 0x04) >> 2;
-        yaCha = regHodingBuf[21];
+
     }
 
 
@@ -430,15 +394,14 @@ public class Modbus_Slav extends Thread {
 
     private void slav_int_03() {
 
+
         if (xieYiLeiXing == 0){
 
             regHodingBuf[0] = jiZuStartStop;
             regHodingBuf[1] = zhiBanStartStop;
-            regHodingBuf[2] = 0;//预留
+            regHodingBuf[2] = Modbus_Slav1.pressFromLocal;//预留
             regHodingBuf[3] = fuYaStartStop;
             regHodingBuf[4] = 0;//预留
-
-
         }else if (xieYiLeiXing == 1){
 
             if (1 == jiZuStartStop){
@@ -460,507 +423,7 @@ public class Modbus_Slav extends Thread {
             }
         }
 
-
         regHodingBuf[5] = wenDuSet;
         regHodingBuf[6] = shiDuSet;
     }
-
-
-    public int getJiZuStartStop() {
-        return jiZuStartStop;
-    }
-
-
-    public void setJiZuStartStop(int jiZuStartStop) {
-        this.jiZuStartStop = jiZuStartStop;
-    }
-
-
-    public int getZhiBanStartStop() {
-        return zhiBanStartStop;
-    }
-
-
-    public void setZhiBanStartStop(int zhiBanStartStop) {
-        this.zhiBanStartStop = zhiBanStartStop;
-    }
-
-
-    public int getFuYaStartStop() {
-        return fuYaStartStop;
-    }
-
-
-    public void setFuYaStartStop(int fuYaStartStop) {
-        this.fuYaStartStop = fuYaStartStop;
-    }
-
-
-    public int getWenDuSet() {
-        return wenDuSet;
-    }
-
-
-    public void setWenDuSet(int wenDuSet) {
-        this.wenDuSet = wenDuSet;
-    }
-
-
-    public int getShiDuSet() {
-        return shiDuSet;
-    }
-
-    public void setShiDuSet(int shiDuSet) {
-        this.shiDuSet = shiDuSet;
-    }
-
-
-    public int getYaChaSet() {
-        return yaChaSet;
-    }
-
-
-    public void setYaChaSet(int yaChaSet) {
-        this.yaChaSet = yaChaSet;
-    }
-
-
-    public int getWenDu() {
-        return wenDu;
-    }
-
-
-    public void setWenDu(int wenDu) {
-        this.wenDu = wenDu;
-    }
-
-
-    public int getShiDu() {
-        return shiDu;
-    }
-
-
-    public void setShiDu(int shiDu) {
-        this.shiDu = shiDu;
-    }
-
-
-    public int getYaCha() {
-        return yaCha;
-    }
-
-
-    public void setYaCha(int yaCha) {
-        this.yaCha = yaCha;
-    }
-
-
-    public int getFengJiZhuangTai() {
-        return fengJiZhuangTai;
-    }
-
-
-    public void setFengJiZhuangTai(int fengJiZhuangTai) {
-        this.fengJiZhuangTai = fengJiZhuangTai;
-    }
-
-
-    public int getZhiBanZhuangTai() {
-        return zhiBanZhuangTai;
-    }
-
-
-    public void setZhiBanZhuangTai(int zhiBanZhuangTai) {
-        this.zhiBanZhuangTai = zhiBanZhuangTai;
-    }
-
-
-    public int getFengJiGuZhang() {
-        return fengJiGuZhang;
-    }
-
-
-    public void setFengJiGuZhang(int fengJiGuZhang) {
-        this.fengJiGuZhang = fengJiGuZhang;
-    }
-
-
-    public int getGaoXiao() {
-        return GaoXiao;
-    }
-
-
-    public void setGaoXiao(int gaoXiao) {
-        GaoXiao = gaoXiao;
-    }
-
-
-    public int getFuYaZhuangtai() {
-        return fuYaZhuangtai;
-    }
-
-
-    public void setFuYaZhuangtai(int fuYaZhuangtai) {
-        this.fuYaZhuangtai = fuYaZhuangtai;
-    }
-
-
-    public int getColdWaterValveOpening() {
-        return ColdWaterValveOpening;
-    }
-
-
-    public void setColdWaterValveOpening(int coldWaterValveOpening) {
-        ColdWaterValveOpening = coldWaterValveOpening;
-    }
-
-
-    public int getHotWaterValveOpening() {
-        return HotWaterValveOpening;
-    }
-
-
-    public void setHotWaterValveOpening(int hotWaterValveOpening) {
-        HotWaterValveOpening = hotWaterValveOpening;
-    }
-
-
-    public int getHumidifieOpening() {
-        return HumidifieOpening;
-    }
-
-
-    public void setHumidifieOpening(int humidifieOpening) {
-        HumidifieOpening = humidifieOpening;
-    }
-
-
-    public int getTheAirTemperature() {
-        return TheAirTemperature;
-    }
-
-
-    public void setTheAirTemperature(int theAirTemperature) {
-        TheAirTemperature = theAirTemperature;
-    }
-
-
-    public int getUpperComputerHeartBeatMonitoringPoint() {
-        return upperComputerHeartBeatMonitoringPoint;
-    }
-
-
-    public void setUpperComputerHeartBeatMonitoringPoint(
-            int upperComputerHeartBeatMonitoringPoint) {
-        this.upperComputerHeartBeatMonitoringPoint = upperComputerHeartBeatMonitoringPoint;
-    }
-
-
-    public int getUpperComputerHandAutomaticallyMonitoringPoint() {
-        return upperComputerHandAutomaticallyMonitoringPoint;
-    }
-
-
-    public void setUpperComputerHandAutomaticallyMonitoringPoint(
-            int upperComputerHandAutomaticallyMonitoringPoint) {
-        this.upperComputerHandAutomaticallyMonitoringPoint = upperComputerHandAutomaticallyMonitoringPoint;
-    }
-
-
-    public int getUpperComputerFengjiZHuangTaiMonitoringPoint() {
-        return upperComputerFengjiZHuangTaiMonitoringPoint;
-    }
-
-
-    public void setUpperComputerFengjiZHuangTaiMonitoringPoint(
-            int upperComputerFengjiZHuangTaiMonitoringPoint) {
-        this.upperComputerFengjiZHuangTaiMonitoringPoint = upperComputerFengjiZHuangTaiMonitoringPoint;
-    }
-
-
-    public int getUpperComputerZhongXiaoMonitoringPoint() {
-        return upperComputerZhongXiaoMonitoringPoint;
-    }
-
-
-    public void setUpperComputerZhongXiaoMonitoringPoint(
-            int upperComputerZhongXiaoMonitoringPoint) {
-        this.upperComputerZhongXiaoMonitoringPoint = upperComputerZhongXiaoMonitoringPoint;
-    }
-
-
-    public int getUpperComputerGaoXiaoMonitoringPoint() {
-        return upperComputerGaoXiaoMonitoringPoint;
-    }
-
-
-    public void setUpperComputerGaoXiaoMonitoringPoint(
-            int upperComputerGaoXiaoMonitoringPoint) {
-        this.upperComputerGaoXiaoMonitoringPoint = upperComputerGaoXiaoMonitoringPoint;
-    }
-
-
-    public int getUpperComputerChuXiaoMonitoringPoint() {
-        return upperComputerChuXiaoMonitoringPoint;
-    }
-
-
-    public void setUpperComputerChuXiaoMonitoringPoint(
-            int upperComputerChuXiaoMonitoringPoint) {
-        this.upperComputerChuXiaoMonitoringPoint = upperComputerChuXiaoMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricWarmOneMonitoringPoint() {
-        return upperComputerElectricWarmOneMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricWarmOneMonitoringPoint(
-            int upperComputerElectricWarmOneMonitoringPoint) {
-        this.upperComputerElectricWarmOneMonitoringPoint = upperComputerElectricWarmOneMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricWarmTwoMonitoringPoint() {
-        return upperComputerElectricWarmTwoMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricWarmTwoMonitoringPoint(
-            int upperComputerElectricWarmTwoMonitoringPoint) {
-        this.upperComputerElectricWarmTwoMonitoringPoint = upperComputerElectricWarmTwoMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricWarmThreeMonitoringPoint() {
-        return upperComputerElectricWarmThreeMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricWarmThreeMonitoringPoint(
-            int upperComputerElectricWarmThreeMonitoringPoint) {
-        this.upperComputerElectricWarmThreeMonitoringPoint = upperComputerElectricWarmThreeMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricWarmHighTemperatureMonitoringPoint() {
-        return upperComputerElectricWarmHighTemperatureMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricWarmHighTemperatureMonitoringPoint(
-            int upperComputerElectricWarmHighTemperatureMonitoringPoint) {
-        this.upperComputerElectricWarmHighTemperatureMonitoringPoint = upperComputerElectricWarmHighTemperatureMonitoringPoint;
-    }
-
-
-    public int getUpperComputerFengJiQueFengMonitoringPoint() {
-        return upperComputerFengJiQueFengMonitoringPoint;
-    }
-
-
-    public void setUpperComputerFengJiQueFengMonitoringPoint(
-            int upperComputerFengJiQueFengMonitoringPoint) {
-        this.upperComputerFengJiQueFengMonitoringPoint = upperComputerFengJiQueFengMonitoringPoint;
-    }
-
-
-    public int getUpperComputerSterilizationMonitoringPoint() {
-        return upperComputerSterilizationMonitoringPoint;
-    }
-
-
-    public void setUpperComputerSterilizationMonitoringPoint(
-            int upperComputerSterilizationMonitoringPoint) {
-        this.upperComputerSterilizationMonitoringPoint = upperComputerSterilizationMonitoringPoint;
-    }
-
-
-    public int getUpperComputerFengJiStartMonitoringPoint() {
-        return upperComputerFengJiStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerFengJiStartMonitoringPoint(
-            int upperComputerFengJiStartMonitoringPoint) {
-        this.upperComputerFengJiStartMonitoringPoint = upperComputerFengJiStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerPaiFengJiStartMonitoringPoint() {
-        return upperComputerPaiFengJiStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerPaiFengJiStartMonitoringPoint(
-            int upperComputerPaiFengJiStartMonitoringPoint) {
-        this.upperComputerPaiFengJiStartMonitoringPoint = upperComputerPaiFengJiStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerZhiBanStartMonitoringPoint() {
-        return upperComputerZhiBanStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerZhiBanStartMonitoringPoint(
-            int upperComputerZhiBanStartMonitoringPoint) {
-        this.upperComputerZhiBanStartMonitoringPoint = upperComputerZhiBanStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerFuYaStartMonitoringPoint() {
-        return upperComputerFuYaStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerFuYaStartMonitoringPoint(
-            int upperComputerFuYaStartMonitoringPoint) {
-        this.upperComputerFuYaStartMonitoringPoint = upperComputerFuYaStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatOneMonitoringPoint() {
-        return upperComputerElectricPreheatOneMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatOneMonitoringPoint(
-            int upperComputerElectricPreheatOneMonitoringPoint) {
-        this.upperComputerElectricPreheatOneMonitoringPoint = upperComputerElectricPreheatOneMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatTwoMonitoringPoint() {
-        return upperComputerElectricPreheatTwoMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatTwoMonitoringPoint(
-            int upperComputerElectricPreheatTwoMonitoringPoint) {
-        this.upperComputerElectricPreheatTwoMonitoringPoint = upperComputerElectricPreheatTwoMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatThreeMonitoringPoint() {
-        return upperComputerElectricPreheatThreeMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatThreeMonitoringPoint(
-            int upperComputerElectricPreheatThreeMonitoringPoint) {
-        this.upperComputerElectricPreheatThreeMonitoringPoint = upperComputerElectricPreheatThreeMonitoringPoint;
-    }
-
-
-    public int getUpperComputerElectricPreheatHighTemperatureMonitoringPoint() {
-        return upperComputerElectricPreheatHighTemperatureMonitoringPoint;
-    }
-
-
-    public void setUpperComputerElectricPreheatHighTemperatureMonitoringPoint(
-            int upperComputerElectricPreheatHighTemperatureMonitoringPoint) {
-        this.upperComputerElectricPreheatHighTemperatureMonitoringPoint = upperComputerElectricPreheatHighTemperatureMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorOneStartMonitoringPoint() {
-        return upperComputerCompressorOneStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorOneStartMonitoringPoint(
-            int upperComputerCompressorOneStartMonitoringPoint) {
-        this.upperComputerCompressorOneStartMonitoringPoint = upperComputerCompressorOneStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorTwoStartMonitoringPoint() {
-        return upperComputerCompressorTwoStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorTwoStartMonitoringPoint(
-            int upperComputerCompressorTwoStartMonitoringPoint) {
-        this.upperComputerCompressorTwoStartMonitoringPoint = upperComputerCompressorTwoStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorThreeStartMonitoringPoint() {
-        return upperComputerCompressorThreeStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorThreeStartMonitoringPoint(
-            int upperComputerCompressorThreeStartMonitoringPoint) {
-        this.upperComputerCompressorThreeStartMonitoringPoint = upperComputerCompressorThreeStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorFourStartMonitoringPoint() {
-        return upperComputerCompressorFourStartMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorFourStartMonitoringPoint(
-            int upperComputerCompressorFourStartMonitoringPoint) {
-        this.upperComputerCompressorFourStartMonitoringPoint = upperComputerCompressorFourStartMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorOneBreakdownMonitoringPoint() {
-        return upperComputerCompressorOneBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorOneBreakdownMonitoringPoint(
-            int upperComputerCompressorOneBreakdownMonitoringPoint) {
-        this.upperComputerCompressorOneBreakdownMonitoringPoint = upperComputerCompressorOneBreakdownMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorTwoBreakdownMonitoringPoint() {
-        return upperComputerCompressorTwoBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorTwoBreakdownMonitoringPoint(
-            int upperComputerCompressorTwoBreakdownMonitoringPoint) {
-        this.upperComputerCompressorTwoBreakdownMonitoringPoint = upperComputerCompressorTwoBreakdownMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorThreeBreakdownMonitoringPoint() {
-        return upperComputerCompressorThreeBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorThreeBreakdownMonitoringPoint(
-            int upperComputerCompressorThreeBreakdownMonitoringPoint) {
-        this.upperComputerCompressorThreeBreakdownMonitoringPoint = upperComputerCompressorThreeBreakdownMonitoringPoint;
-    }
-
-
-    public int getUpperComputerCompressorFourBreakdownMonitoringPoint() {
-        return upperComputerCompressorFourBreakdownMonitoringPoint;
-    }
-
-
-    public void setUpperComputerCompressorFourBreakdownMonitoringPoint(
-            int upperComputerCompressorFourBreakdownMonitoringPoint) {
-        this.upperComputerCompressorFourBreakdownMonitoringPoint = upperComputerCompressorFourBreakdownMonitoringPoint;
-    }
-
-
-    public int getWinterInSummer() {
-        return WinterInSummer;
-    }
-
-
-    public void setWinterInSummer(int winterInSummer) {
-        WinterInSummer = winterInSummer;
-    }
-
-
 }
