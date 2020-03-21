@@ -977,7 +977,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="氧  气:"
+        android:text="氧        气:"
         android:textColor="#ffffff"
         android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -1000,10 +1000,10 @@
         android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintHorizontal_bias="0.886"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.662" />
+        app:layout_constraintVertical_bias="0.661" />
 
     <TextView
         android:id="@+id/textView29"
@@ -1018,7 +1018,7 @@
         android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintHorizontal_bias="0.886"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.763" />
@@ -1036,7 +1036,7 @@
         android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintHorizontal_bias="0.739"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.763" />
@@ -1381,10 +1381,11 @@
         android:layout_marginStart="16dp"
         android:text="0KPa"
         android:textColor="#ffffff"
-        android:textSize="22dp"
+        android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView25"
         app:layout_constraintStart_toEndOf="@+id/textView25"
-        app:layout_constraintTop_toTopOf="@+id/textView25" />
+        app:layout_constraintTop_toTopOf="@+id/textView25"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/tv_er_yang_hua_tan_value"
@@ -1393,10 +1394,11 @@
         android:layout_marginStart="16dp"
         android:text="0KPa"
         android:textColor="#ffffff"
-        android:textSize="22dp"
+        android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView26"
         app:layout_constraintStart_toEndOf="@+id/textView26"
-        app:layout_constraintTop_toTopOf="@+id/textView26" />
+        app:layout_constraintTop_toTopOf="@+id/textView26"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/tv_fu_ya_xi_yin_value"
@@ -1405,10 +1407,11 @@
         android:layout_marginStart="16dp"
         android:text="0KPa"
         android:textColor="#ffffff"
-        android:textSize="22dp"
+        android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView28"
         app:layout_constraintStart_toEndOf="@+id/textView28"
-        app:layout_constraintTop_toTopOf="@+id/textView28" />
+        app:layout_constraintTop_toTopOf="@+id/textView28"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/tv_ya_suo_kong_qi_value"
@@ -1417,10 +1420,11 @@
         android:layout_marginStart="16dp"
         android:text="0KPa"
         android:textColor="#ffffff"
-        android:textSize="22dp"
+        android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView29"
         app:layout_constraintStart_toEndOf="@+id/textView29"
-        app:layout_constraintTop_toTopOf="@+id/textView29" />
+        app:layout_constraintTop_toTopOf="@+id/textView29"
+        app:layout_constraintVertical_bias="0.933" />
 
 
 </android.support.constraint.ConstraintLayout>
