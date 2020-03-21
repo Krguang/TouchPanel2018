@@ -241,18 +241,14 @@
         android:id="@+id/wendu_up_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/up_dizeng"
         android:onClick="Butwendu_up"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.197"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@+id/fuyaqi_over_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.191"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.623" />
+        app:layout_constraintVertical_bias="0.621" />
 
     <TextView
         android:id="@+id/tv_wendudisplay_id"
@@ -461,6 +457,7 @@
 
 
     <TextView
+        android:id="@+id/textView30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -955,378 +952,94 @@
          /-->
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="氧  气"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.72"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.627" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="笑  气"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.72"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.682" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="氩  气"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.72"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.735" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="氮  气"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.72"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.792" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="负压吸引"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.867"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.627" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="压缩空气"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.867"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.683" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="二氧化碳"
-        android:textColor="#ffffff"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.867"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.737" />
-
-
-    <Button
-        android:id="@+id/qitizhengchang"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="22dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/qitizhengchang"
-        app:layout_constraintLeft_toLeftOf="@+id/eryanghuatanqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/eryanghuatanqi_normal_id" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:text="正常"
-        android:textColor="#ffffff"
-        android:textSize="15dp"
-        app:layout_constraintLeft_toLeftOf="@+id/qitizhengchang"
-        app:layout_constraintTop_toBottomOf="@+id/qitizhengchang" />
-
-
-    <Button
-        android:id="@+id/qitiqianya"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/qitiqianya"
-        app:layout_constraintLeft_toLeftOf="@+id/eryanghuatanqi_under_id"
-        app:layout_constraintTop_toBottomOf="@+id/eryanghuatanqi_under_id" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:text="欠压"
-        android:textColor="#ffffff"
-        android:textSize="15dp"
-        app:layout_constraintLeft_toLeftOf="@+id/qitiqianya"
-        app:layout_constraintTop_toBottomOf="@+id/qitiqianya" />
-
-    <Button
-        android:id="@+id/qitichaoya"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/qitichaoya"
-        app:layout_constraintLeft_toLeftOf="@+id/eryanghuatanqi_over_id"
-        app:layout_constraintTop_toBottomOf="@+id/eryanghuatanqi_over_id" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:text="超压"
-        android:textColor="#ffffff"
-        android:textSize="15dp"
-        app:layout_constraintLeft_toLeftOf="@+id/qitichaoya"
-        app:layout_constraintTop_toBottomOf="@+id/qitichaoya" />
-
     <!-- 氧气 -->
-    <Button
-        android:id="@+id/yangqi_normal_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/init_ing"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.754"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.63" />
-
-
-    <Button
-        android:id="@+id/yangqi_under_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintBottom_toBottomOf="@+id/yangqi_normal_id"
-        app:layout_constraintLeft_toRightOf="@+id/yangqi_normal_id" />
-
-
-    <Button
-        android:id="@+id/yangqi_over_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintBottom_toBottomOf="@+id/yangqi_under_id"
-        app:layout_constraintLeft_toRightOf="@+id/yangqi_under_id" />
 
 
     <!-- 笑气   -->
-    <Button
-        android:id="@+id/xiaoqi_normal_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-
-        app:layout_constraintLeft_toLeftOf="@+id/yangqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/yangqi_normal_id" />
-
-    <Button
-        android:id="@+id/xiaoqi_under_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/xiaoqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/yangqi_under_id" />
-
-    <Button
-        android:id="@+id/xiaoqi_over_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/xiaoqi_under_id"
-        app:layout_constraintTop_toBottomOf="@+id/yangqi_over_id" />
 
     <!-- 氩气      -->
 
-    <Button
-        android:id="@+id/yaqi_normal_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toLeftOf="@+id/xiaoqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/xiaoqi_normal_id" />
-
-    <Button
-        android:id="@+id/yaqi_under_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/yaqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/xiaoqi_under_id" />
-
-    <Button
-        android:id="@+id/yaqi_over_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/yaqi_under_id"
-        app:layout_constraintTop_toBottomOf="@+id/xiaoqi_over_id" />
-
     <!-- 氮气    -->
-    <Button
-        android:id="@+id/danqi_normal_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toLeftOf="@+id/yaqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/yaqi_normal_id" />
-
-
-    <Button
-        android:id="@+id/danqi_under_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/danqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/yaqi_under_id" />
-
-    <Button
-        android:id="@+id/danqi_over_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/danqi_under_id"
-        app:layout_constraintTop_toBottomOf="@+id/yaqi_over_id" />
 
 
     <!-- 负压气   -->
-    <Button
-        android:id="@+id/fuyaqi_normal_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:background="@drawable/init_ing"
-        app:layout_constraintBottom_toTopOf="@+id/xiaoqi_over_id"
-        app:layout_constraintStart_toEndOf="@+id/yangqi_over_id" />
-
-    <Button
-        android:id="@+id/fuyaqi_under_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintBottom_toBottomOf="@+id/fuyaqi_normal_id"
-        app:layout_constraintLeft_toRightOf="@+id/fuyaqi_normal_id" />
-
-    <Button
-        android:id="@+id/fuyaqi_over_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintBottom_toBottomOf="@+id/fuyaqi_under_id"
-        app:layout_constraintLeft_toRightOf="@+id/fuyaqi_under_id" />
 
     <!-- 压缩空气 -->
-    <Button
-        android:id="@+id/yasuoqi_normal_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintRight_toRightOf="@+id/fuyaqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/fuyaqi_normal_id" />
-
-    <Button
-        android:id="@+id/yasuoqi_under_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/yasuoqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/fuyaqi_under_id" />
-
-    <Button
-        android:id="@+id/yasuoqi_over_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/yasuoqi_under_id"
-        app:layout_constraintTop_toBottomOf="@+id/fuyaqi_over_id" />
 
     <!-- 二氧化碳气  -->
-    <Button
-        android:id="@+id/eryanghuatanqi_normal_id"
+
+
+    <TextView
+        android:id="@+id/textView25"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toLeftOf="@+id/yasuoqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/yasuoqi_normal_id" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="氧  气:"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.662" />
 
-    <Button
-        android:id="@+id/eryanghuatanqi_under_id"
+    <TextView
+        android:id="@+id/textView28"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/eryanghuatanqi_normal_id"
-        app:layout_constraintTop_toBottomOf="@+id/yasuoqi_under_id" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="负压吸引:"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.662" />
 
-    <Button
-        android:id="@+id/eryanghuatanqi_over_id"
+    <TextView
+        android:id="@+id/textView29"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/init_ing"
-        app:layout_constraintLeft_toRightOf="@+id/eryanghuatanqi_under_id"
-        app:layout_constraintTop_toBottomOf="@+id/yasuoqi_over_id" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="压缩空气:"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.763" />
 
+    <TextView
+        android:id="@+id/textView26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="二氧化碳:"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.763" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -1660,6 +1373,54 @@
         app:layout_constraintEnd_toEndOf="@+id/bt_it_power_id"
         app:layout_constraintStart_toStartOf="@+id/bt_it_power_id"
         app:layout_constraintTop_toBottomOf="@+id/bt_it_power_id" />
+
+    <TextView
+        android:id="@+id/tv_yang_qi_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="0KPa"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView25"
+        app:layout_constraintStart_toEndOf="@+id/textView25"
+        app:layout_constraintTop_toTopOf="@+id/textView25" />
+
+    <TextView
+        android:id="@+id/tv_er_yang_hua_tan_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="0KPa"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView26"
+        app:layout_constraintStart_toEndOf="@+id/textView26"
+        app:layout_constraintTop_toTopOf="@+id/textView26" />
+
+    <TextView
+        android:id="@+id/tv_fu_ya_xi_yin_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="0KPa"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView28"
+        app:layout_constraintStart_toEndOf="@+id/textView28"
+        app:layout_constraintTop_toTopOf="@+id/textView28" />
+
+    <TextView
+        android:id="@+id/tv_ya_suo_kong_qi_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="0KPa"
+        android:textColor="#ffffff"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView29"
+        app:layout_constraintStart_toEndOf="@+id/textView29"
+        app:layout_constraintTop_toTopOf="@+id/textView29" />
 
 
 </android.support.constraint.ConstraintLayout>

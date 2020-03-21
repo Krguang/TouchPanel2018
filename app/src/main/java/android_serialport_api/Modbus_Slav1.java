@@ -1,5 +1,7 @@
 package android_serialport_api;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,12 @@ public class Modbus_Slav1 extends Thread {
 
     public int danQiChaoYa;
     public int danQiQianYa;
+
+    public int yangQiValue;
+    public int erYangHuaTanValue;
+    public int fuYaXiYinValue;
+    public int yaSuoKongQiValue;
+
 
     public int Lightling_1 = 1;
 
@@ -293,6 +301,18 @@ public class Modbus_Slav1 extends Thread {
 
         gasStatus=regHodingBuf[3];
         pressFromLocal = regHodingBuf[13];
+
+        yangQiValue = (int)(regHodingBuf[6]*1.1-99);
+        if (yangQiValue<0) yangQiValue=0;
+
+        erYangHuaTanValue = (int)(regHodingBuf[9]*1.1-99);
+        if (erYangHuaTanValue<0) erYangHuaTanValue=0;
+
+        fuYaXiYinValue = (int)(regHodingBuf[10]*1.1-99);
+        if (fuYaXiYinValue>0) fuYaXiYinValue=0;
+
+        yaSuoKongQiValue = (int)(regHodingBuf[7]*1.1-99);
+        if (yaSuoKongQiValue<0) yaSuoKongQiValue=0;
     }
 
     private void mod_Fun_03_Slav(byte[] reBuf) {
