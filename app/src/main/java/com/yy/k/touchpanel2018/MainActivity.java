@@ -505,7 +505,7 @@ public class MainActivity extends Activity {
                                                         ButItPower.setBackgroundResource(R.drawable.qitizhengchang);
                                                 }
 
-                                                ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
+                                         //       ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
                         /*
                         if(modbusSlave1.xiaoQiChaoYa==1){
                             ButLaughingGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
@@ -551,33 +551,33 @@ public class MainActivity extends Activity {
                                                         ButNegativePressure_Display_over.setBackgroundResource(R.drawable.init_ing);
                                                 }
 
-                                                if (modbusSlave1.yaQiChaoYa==1){
-                                                        ButArgonGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
-                                                        ButArgonGas_Display_under.setBackgroundResource(R.drawable.init_ing);
-                                                        ButArgonGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if (modbusSlave1.yaQiQianYa==1){
-                                                        ButArgonGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
-                                                        ButArgonGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
-                                                        ButArgonGas_Display_over.setBackgroundResource(R.drawable.init_ing);
-                                                }else {
-                                                        ButArgonGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
-                                                        ButArgonGas_Display_under.setBackgroundResource(R.drawable.init_ing);
-                                                        ButArgonGas_Display_over.setBackgroundResource(R.drawable.init_ing);
-                                                }
+//                                                if (modbusSlave1.yaQiChaoYa==1){
+//                                                        ButArgonGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButArgonGas_Display_under.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButArgonGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
+//                                                }else if (modbusSlave1.yaQiQianYa==1){
+//                                                        ButArgonGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButArgonGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
+//                                                        ButArgonGas_Display_over.setBackgroundResource(R.drawable.init_ing);
+//                                                }else {
+//                                                        ButArgonGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
+//                                                        ButArgonGas_Display_under.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButArgonGas_Display_over.setBackgroundResource(R.drawable.init_ing);
+//                                                }
 
-                                                if (modbusSlave1.danQiChaoYa==1){
-                                                        ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
-                                                        ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.init_ing);
-                                                        ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
-                                                }else if(modbusSlave1.danQiQianYa==1){
-                                                        ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
-                                                        ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
-                                                        ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.init_ing);
-                                                }else {
-                                                        ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
-                                                        ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.init_ing);
-                                                        ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.init_ing);
-                                                }
+//                                                if (modbusSlave1.danQiChaoYa==1){
+//                                                        ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.qitichaoya);
+//                                                }else if(modbusSlave1.danQiQianYa==1){
+//                                                        ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.qitiqianya);
+//                                                        ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.init_ing);
+//                                                }else {
+//                                                        ButNitrogenGas_Display_normal.setBackgroundResource(R.drawable.qitizhengchang);
+//                                                        ButNitrogenGas_Display_under.setBackgroundResource(R.drawable.init_ing);
+//                                                        ButNitrogenGas_Display_over.setBackgroundResource(R.drawable.init_ing);
+//                                                }
 
                                                 if (modbusSlave1.gasStatus!=0){
                                                         beepOn();
