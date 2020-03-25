@@ -172,7 +172,7 @@ public class MainActivity extends Activity {
         private int ButIntraoperative_Lamp_variabe = 1;//术中灯
         private int But_OfLightThe_Lamp_variabe = 1;//光片灯
         private int ButPrepare_variabe = 1;//备用
-        private int ButErasure_variabe = 1;//消音
+        private int ButErasure_variabe = 0;//消音
         private int wendu_DisplaySet_Change = 10;
         private int shidu_DisplaySet_Change = 10;
 
@@ -198,11 +198,6 @@ public class MainActivity extends Activity {
         private int wenDuSetChangeTemp = 230;
         private int shiDuSetChangeTemp = 500;
 
-
-        @Override
-        public void onBackPressed() {
-                // super.onBackPressed();
-        }
 
         public void onCreate(Bundle savedInstanceState) {
 
@@ -277,13 +272,12 @@ public class MainActivity extends Activity {
                         ButPrepare_variabe = 0;
                 }
 
-                modbusSlave1.Erasure = SpUtils.getInt(this,"消音",1);
-                if (1 == modbusSlave1.Erasure){
+                ButErasure_variabe = SpUtils.getInt(this,"消音",1);
+                if (1 == ButErasure_variabe){
                         ButErasure.setBackgroundResource(R.drawable.jingyin);
-                        ButErasure_variabe = 1;
                 }else {
                         ButErasure.setBackgroundResource(R.drawable.jingyin_press);
-                        ButErasure_variabe = 0;
+                        modbusSlave1.Erasure = 0;
                 }
 
                 modbusSlave.jiZuStartStop = SpUtils.getInt(this,"机组起停按键",0);

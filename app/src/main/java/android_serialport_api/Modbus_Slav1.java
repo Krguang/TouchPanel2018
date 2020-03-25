@@ -62,7 +62,7 @@ public class Modbus_Slav1 extends Thread {
     /***
      * 消音
      */
-    public int Erasure = 1;
+    public int Erasure = 0;
 
     private int[] regHodingBuf = new int[1024];
 
